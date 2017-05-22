@@ -16,22 +16,18 @@
         $errno = 0;
         $errstr = "";
         $fp = fsockopen($host, $port, $errno, $errstr, 10);
-        if($fp == false) {
+        if(!$fp) {
             exit("Error $errno: $errstr");
         }
         $length = strlen($request);
-        $header =
-            "POST $rpc HTTP/1.0\r\n" .
-            "User-Agent: xmlrpc-epi-php\r\n" .
-            "Host: $host:$port\r\n" .
-            "Content-Type: text/xml\r\n" .
-            "Content-Length: $length\r\n" .
-            "\r\n" .
-            $request;
-
+        fwrite($fp, "POST $rpc HTTP/1.0\r\n");
+        fwrite($fp, "User-Agent: lordandy\r\n");
+        fwrite($fp, "Host: $host:$port\r\n");
+        fwrite($fp, "Content-Type: text/xml\r\n");
+        fwrite($fp, "Content-Length: $length\r\n");
+        fwrite($fp, "\r\n");
+        fwrite($fp, $request);
         $response = "";
-        fwrite($fp, $header, strlen($header));
-        $line = fgets($fp);
         $line = fgets($fp);
         while($line) {
             $response .= $line;
@@ -43,7 +39,10 @@
 
     function decode($toDecode) {
         $substring = substr($toDecode, strpos($toDecode, "<?xml"));
-        return xmlrpc_decode($substring);
+        $substring = strip_tags($substring);
+        $substring = trim($substring);
+        $arr = preg_split("/\s\s+/", $substring);
+        return $arr;
     }
 
 ?>

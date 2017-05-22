@@ -14,4 +14,16 @@
     function getName($hash) {
         return call('d.get_name', $hash);
     }
+
+    function getPriority($hash) {
+        return call('d.priority_str', $hash);
+    }
+
+    function getSize($hash) {
+        return call('d.size_bytes', $hash);
+    }
+
+    function getState($hash) {
+        return call('d.state', $hash);
+    }
 ?>
