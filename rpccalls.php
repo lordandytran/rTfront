@@ -80,4 +80,11 @@
         call('load_start', $link);
     }
 
+    //returns percentage done of torrent
+    function getPercentDone($hash) {
+        $done = call('d.completed_bytes', $hash)[0];
+        $total = call('d.size_bytes', $hash)[0];
+        return ($done / $total) * 100;
+    }
+
 ?>
