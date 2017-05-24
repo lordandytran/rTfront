@@ -65,10 +65,14 @@
                     echo '<td>' . getSize($val) . '</td>';
 
                     echo '<td>';
+                        echo '<div class="progress"></div>';
+                        echo '<div class="message"></div>';
                         printf("%.2f%%", getPercentDone($val));
                     echo '</td>';
 
-                    echo '<td>' . getDownRate($val) . '</td>';
+                    echo '<td>';
+                        echo "<div class='downrate'></div>";
+                    echo '</td>';
 
                     echo '<td>' . getUpRate($val) . '</td>';
 
@@ -76,13 +80,21 @@
                         printf("%.2f",getRatio($val));
                     echo '</td>';
 
-                    echo '<td>' . $val . '</td>';
+                    echo '<td>';
+                        echo "<div class='hash'>$val</div>";
+                    echo'</td>';
 
                     echo '</tr>';
                 }
                 unset($val);
             ?>
         </table>
+        <script>
+            function loadDownRate() {
+                $(".downrate").load("scripts/downrate.php", );
+            }
+            setInterval(function(){loadDownRate()}, 1000);
+        </script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
     </body>

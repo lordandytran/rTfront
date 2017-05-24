@@ -4,18 +4,29 @@
     }
 
     function sizeToString($size) {
-        $str = (string)$size; //Casting with abandon
-        $dec = $str[0] . "." . $str[1] . $str[2];
+        $dec = "";
         if($size >= 1000000000000) {
+            $tb = intval($size / 1000000000000);
+            $offset = (string)($size % 1000000000000);
+            $dec .=  (string)$tb . "." . $offset[0] . $offset[1];
             return $dec . " TB";
         }
         if($size >= 1000000000) {
+            $gb = intval($size / 1000000000);
+            $offset = (string)($size % 1000000000);
+            $dec .=  (string)$gb . "." . $offset[0] . $offset[1];
             return $dec . " GB";
         }
         if($size >= 1000000) {
+            $mb = intval($size / 1000000);
+            $offset = (string)($size % 1000000);
+            $dec .=  (string)$mb . "." . $offset[0] . $offset[1];
             return $dec . " MB";
         }
         if($size >= 1000) {
+            $kb = intval($size / 1000);
+            $offset = (string)($size % 1000);
+            $dec .=  (string)$kb . "." . $offset[0] . $offset[1];
             return $dec . " KB";
         }
         return $size . " bytes";
