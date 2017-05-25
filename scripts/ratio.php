@@ -2,6 +2,6 @@
     include '../connect.php';
     include '../rpccalls.php';
     $hash = $_GET['hash'];
-    $up = getUpRate($hash);
-    echo $up;
+    $r = getRatio($hash);
+    printf("%.2f", $r);
 ?>

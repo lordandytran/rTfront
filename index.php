@@ -5,12 +5,13 @@
     if(isset($_POST["submit_link"])) {
         $link = $_POST["link_sub"];
         createTorrent($link);
-        sleep(5);
+        sleep(4);
         header("location: index.php");
     }
 ?>
 <html>
     <head>
+        <title>rTfront</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" href="css/style.css">
     </head>
@@ -65,36 +66,56 @@
                     echo '<td>' . getSize($val) . '</td>';
 
                     echo '<td>';
-                        echo '<div class="progress"></div>';
-                        echo '<div class="message"></div>';
-                        printf("%.2f%%", getPercentDone($val));
+            ?>
+                        <div id="progress<?php echo $val ?>"></div>
+                        <div id="message<?php echo $val ?>"></div>
+                        <script>
+                            function percentRate<?php echo $val ?>() {
+                                $('#message<?php echo $val ?>').load('scripts/percent.php?hash=<?php echo $val ?>');
+                            }
+                            setInterval(function(){percentRate<?php echo $val ?>()}, 1000);
+                        </script>
+            <?php
                     echo '</td>';
-
                     echo '<td>';
-                        echo "<div class='downrate'></div>";
+            ?>
+                        <div id='downrate<?php echo $val ?>'></div>
+                        <script>
+                            function loadDownRate<?php echo $val ?>() {
+                                $('#downrate<?php echo $val ?>').load('scripts/downrate.php?hash=<?php echo $val ?>');
+                            }
+                            setInterval(function(){loadDownRate<?php echo $val ?>()}, 1000);
+                        </script>
+            <?php
                     echo '</td>';
-
-                    echo '<td>' . getUpRate($val) . '</td>';
-
                     echo '<td>';
-                        printf("%.2f",getRatio($val));
+            ?>
+                        <div id='uprate<?php echo $val ?>'></div>
+                        <script>
+                            function loadUpRate<?php echo $val ?>() {
+                                $('#uprate<?php echo $val ?>').load('scripts/uprate.php?hash=<?php echo $val ?>');
+                            }
+                            setInterval(function(){loadUpRate<?php echo $val ?>()}, 1000);
+                        </script>
+            <?php
                     echo '</td>';
-
                     echo '<td>';
-                        echo "<div class='hash'>$val</div>";
-                    echo'</td>';
-
+            ?>
+                        <div id='ratio<?php echo $val ?>'></div>
+                        <script>
+                            function loadRatio<?php echo $val ?>() {
+                                $('#ratio<?php echo $val ?>').load('scripts/ratio.php?hash=<?php echo $val ?>');
+                            }
+                            setInterval(function(){loadRatio<?php echo $val ?>()}, 1000);
+                        </script>
+            <?php
+                    echo '</td>';
+                    echo '<td>' . $val . '</td>';
                     echo '</tr>';
                 }
                 unset($val);
             ?>
         </table>
-        <script>
-            function loadDownRate() {
-                $(".downrate").load("scripts/downrate.php", );
-            }
-            setInterval(function(){loadDownRate()}, 1000);
-        </script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
     </body>
