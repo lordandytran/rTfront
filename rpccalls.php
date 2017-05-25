@@ -98,4 +98,16 @@
         return ($done / $total) * 100;
     }
 
+    function getDirectory($hash) {
+        return call('d.directory_base', $hash)[0];
+    }
+
+    function getETA($hash) {
+        return "";
+    }
+
+    function isActive($hash) {
+        return call('d.is_active', $hash)[0];
+    }
+
 ?>

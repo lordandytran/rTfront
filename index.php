@@ -16,7 +16,7 @@
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
-        <button type="button" class="btn btn-info btn-default" data-toggle="modal" data-target="#myModal">Add</button>
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Add</button>
         <div id="myModal" class="modal fade" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -43,79 +43,90 @@
             </div>
         </div>
         <p></p>
-        <table id="tab1" style="width:100%">
-            <tr>
-                <th>Name</th>
-                <th>Size</th>
-                <th>Done</th>
-                <!--<th>Seeds</th>
-                <th>Peers</th>-->
-                <th>Down Speed</th>
-                <th>Up Speed</th>
-                <!--<th>ETA</th>-->
-                <th>Ratio</th>
-                <th>Hash</th>
-            </tr>
-            <?php
-                $arr = getDownloadList();
-                foreach($arr as $val) {
-                    echo '<tr>';
+        <div id="table-wrap">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Size</th>
+                        <th>Done</th>
+                        <!--<th>Seeds</th>
+                        <th>Peers</th>-->
+                        <th>Down Speed</th>
+                        <th>Up Speed</th>
+                        <th>ETA</th>
+                        <th>Ratio</th>
+                        <!--<th>Hash</th>-->
+                    </tr>
+                </thead>
+                <?php
+                    $arr = getDownloadList();
+                    $i = 0;
+                    foreach($arr as $val) {
+                        echo '<tr>';
 
-                    echo '<td>' . getName($val) . '</td>';
+                        echo '<th scope="row">' . ++$i . '</th>';
 
-                    echo '<td>' . getSize($val) . '</td>';
+                        echo '<td>' . getName($val) . '</td>';
 
-                    echo '<td>';
-            ?>
-                        <div id="progress<?php echo $val ?>"></div>
-                        <div id="message<?php echo $val ?>"></div>
-                        <script>
-                            function percentRate<?php echo $val ?>() {
-                                $('#message<?php echo $val ?>').load('scripts/percent.php?hash=<?php echo $val ?>');
-                            }
-                            setInterval(function(){percentRate<?php echo $val ?>()}, 1000);
-                        </script>
-            <?php
-                    echo '</td>';
-                    echo '<td>';
-            ?>
-                        <div id='downrate<?php echo $val ?>'></div>
-                        <script>
-                            function loadDownRate<?php echo $val ?>() {
-                                $('#downrate<?php echo $val ?>').load('scripts/downrate.php?hash=<?php echo $val ?>');
-                            }
-                            setInterval(function(){loadDownRate<?php echo $val ?>()}, 1000);
-                        </script>
-            <?php
-                    echo '</td>';
-                    echo '<td>';
-            ?>
-                        <div id='uprate<?php echo $val ?>'></div>
-                        <script>
-                            function loadUpRate<?php echo $val ?>() {
-                                $('#uprate<?php echo $val ?>').load('scripts/uprate.php?hash=<?php echo $val ?>');
-                            }
-                            setInterval(function(){loadUpRate<?php echo $val ?>()}, 1000);
-                        </script>
-            <?php
-                    echo '</td>';
-                    echo '<td>';
-            ?>
-                        <div id='ratio<?php echo $val ?>'></div>
-                        <script>
-                            function loadRatio<?php echo $val ?>() {
-                                $('#ratio<?php echo $val ?>').load('scripts/ratio.php?hash=<?php echo $val ?>');
-                            }
-                            setInterval(function(){loadRatio<?php echo $val ?>()}, 1000);
-                        </script>
-            <?php
-                    echo '</td>';
-                    echo '<td>' . $val . '</td>';
-                    echo '</tr>';
-                }
-                unset($val);
-            ?>
-        </table>
+                        echo '<td>' . getSize($val) . '</td>';
+
+                        echo '<td>';
+                ?>
+                            <div id="progress<?php echo $val ?>"></div>
+                            <div id="message<?php echo $val ?>"></div>
+                            <script>
+                                function percentRate<?php echo $val ?>() {
+                                    $('#message<?php echo $val ?>').load('scripts/percent.php?hash=<?php echo $val ?>');
+                                }
+                                setInterval(function(){percentRate<?php echo $val ?>()}, 1000);
+                            </script>
+                <?php
+                        echo '</td>';
+                        echo '<td>';
+                ?>
+                            <div id='downrate<?php echo $val ?>'></div>
+                            <script>
+                                function loadDownRate<?php echo $val ?>() {
+                                    $('#downrate<?php echo $val ?>').load('scripts/downrate.php?hash=<?php echo $val ?>');
+                                }
+                                setInterval(function(){loadDownRate<?php echo $val ?>()}, 1000);
+                            </script>
+                <?php
+                        echo '</td>';
+                        echo '<td>';
+                ?>
+                            <div id='uprate<?php echo $val ?>'></div>
+                            <script>
+                                function loadUpRate<?php echo $val ?>() {
+                                    $('#uprate<?php echo $val ?>').load('scripts/uprate.php?hash=<?php echo $val ?>');
+                                }
+                                setInterval(function(){loadUpRate<?php echo $val ?>()}, 1000);
+                            </script>
+                <?php
+                        echo '</td>';
+
+                        echo '<td>' . getETA($val) . '</td>';
+
+                        echo '<td>';
+                ?>
+                            <div id='ratio<?php echo $val ?>'></div>
+                            <script>
+                                function loadRatio<?php echo $val ?>() {
+                                    $('#ratio<?php echo $val ?>').load('scripts/ratio.php?hash=<?php echo $val ?>');
+                                }
+                                setInterval(function(){loadRatio<?php echo $val ?>()}, 1000);
+                            </script>
+                <?php
+                        echo '</td>';
+                        //echo '<td>' . $val . '</td>';
+                        echo '</tr>';
+                    }
+                    unset($val);
+                ?>
+            </table>
+        </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
     </body>
