@@ -9,21 +9,21 @@
         header("location: index.php");
     }
 
-    if(isset($_POST["remove_torrent"])) {
+    if(isset($_POST["remove"])) {
         foreach ($_POST["checkbox"] as $hash) {
             eraseTorrent($hash);
         }
         header("location: index.php");
     }
 
-    if(isset($_POST["start_torrent"])) {
+    if(isset($_POST["start"])) {
         foreach ($_POST["checkbox"] as $hash) {
             startTorrent($hash);
         }
         header("location: index.php");
     }
 
-    if(isset($_POST["stop_torrent"])) {
+    if(isset($_POST["stop"])) {
         foreach ($_POST["checkbox"] as $hash) {
             stopTorrent($hash);
         }
@@ -40,10 +40,11 @@
     <body>
         <p></p>
         <div style="width:90%;margin:auto">
-            <input type="submit" name="start_torrent" class="btn btn-success btn" value="Start">
-            <input type="submit" name="stop_torrent" class="btn btn-success btn" value="Stop">
-            <input type="submit" name="remove_torrent" class="btn btn-success btn" value="Remove">
+            <input type="submit" name="start" class="btn btn-success btn" value="Start">
+            <input type="submit" name="stop" class="btn btn-success btn" value="Stop">
+            <input type="submit" name="remove" class="btn btn-success btn" value="Remove">
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Add</button>
+            <a href="settings.php" class="btn btn-success btn" style="float:right">Settings</a>
         </div>
         <div id="myModal" class="modal fade" role="dialog">
             <div class="modal-dialog">
@@ -71,11 +72,19 @@
             </div>
         </div>
         <p></p>
+        <script language="JavaScript">
+            function toggle(source) {
+                var checkboxes = document.getElementsByName('checkbox[]');
+                for(var i = 0, n = checkboxes.length; i < n; i++) {
+                    checkboxes[i].checked = source.checked;
+                }
+            }
+        </script>
         <div id="table-wrap">
             <table class="table table-bordered table-striped" style="width:90%;margin:auto">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th><input type="checkbox" onclick="toggle(this)" /></th>
                         <th>Name</th>
                         <th>Size</th>
                         <th>Done</th>
@@ -94,7 +103,7 @@
                     foreach($arr as $val) {
                         echo '<tr>';
 
-                        echo '<th scope="row">' . ++$i . '</th>';
+                        echo '<td>' . "<input type='checkbox' name='checkbox[]' value='$val' />" . '</td>';
 
                         echo '<td>' . getName($val) . '</td>';
 

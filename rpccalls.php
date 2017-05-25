@@ -8,19 +8,19 @@
         if($size >= 1000000000000) {
             $tb = intval($size / 1000000000000);
             $offset = (string)($size % 1000000000000);
-            $dec .=  (string)$tb . "." . $offset[0] . $offset[1];
+            $dec .=  (string)$tb . "." . $offset[0]; //. $offset[1];
             return $dec . " TB";
         }
         if($size >= 1000000000) {
             $gb = intval($size / 1000000000);
             $offset = (string)($size % 1000000000);
-            $dec .=  (string)$gb . "." . $offset[0] . $offset[1];
+            $dec .=  (string)$gb . "." . $offset[0]; //. $offset[1];
             return $dec . " GB";
         }
         if($size >= 1000000) {
             $mb = intval($size / 1000000);
             $offset = (string)($size % 1000000);
-            $dec .=  (string)$mb . "." . $offset[0] . $offset[1];
+            $dec .=  (string)$mb . "." . $offset[0]; //. $offset[1];
             return $dec . " MB";
         }
         if($size >= 1000) {
@@ -66,7 +66,8 @@
 
     //returns seed ratio of torrent
     function getRatio($hash) {
-        return call('d.ratio', $hash)[0];
+        $ratio = call('d.ratio', $hash)[0];
+        return $ratio / 1000;
     }
 
     //stops given torrent
