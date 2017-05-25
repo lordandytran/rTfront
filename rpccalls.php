@@ -25,9 +25,7 @@
         }
         if($size >= 1000) {
             $kb = intval($size / 1000);
-            $offset = (string)($size % 1000);
-            $dec .=  (string)$kb . "." . $offset[0] . $offset[1];
-            return $dec . " KB";
+            return $kb . " KB";
         }
         return $size . " bytes";
     }

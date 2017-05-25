@@ -11,6 +11,7 @@
         sleep(1);
     }*/
 
-    echo getDownRate($hash);
+    $down = getDownRate($hash);
+    echo $down;
 
 ?>

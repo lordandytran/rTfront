@@ -8,6 +8,28 @@
         sleep(4);
         header("location: index.php");
     }
+
+    if(isset($_POST["remove_torrent"])) {
+        foreach ($_POST["checkbox"] as $hash) {
+            eraseTorrent($hash);
+        }
+        header("location: index.php");
+    }
+
+    if(isset($_POST["start_torrent"])) {
+        foreach ($_POST["checkbox"] as $hash) {
+            startTorrent($hash);
+        }
+        header("location: index.php");
+    }
+
+    if(isset($_POST["stop_torrent"])) {
+        foreach ($_POST["checkbox"] as $hash) {
+            stopTorrent($hash);
+        }
+        header("location: index.php");
+    }
+
 ?>
 <html>
     <head>
@@ -16,7 +38,13 @@
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
-        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Add</button>
+        <p></p>
+        <div style="width:90%;margin:auto">
+            <input type="submit" name="start_torrent" class="btn btn-success btn" value="Start">
+            <input type="submit" name="stop_torrent" class="btn btn-success btn" value="Stop">
+            <input type="submit" name="remove_torrent" class="btn btn-success btn" value="Remove">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Add</button>
+        </div>
         <div id="myModal" class="modal fade" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -44,7 +72,7 @@
         </div>
         <p></p>
         <div id="table-wrap">
-            <table class="table table-bordered table-striped">
+            <table class="table table-bordered table-striped" style="width:90%;margin:auto">
                 <thead>
                     <tr>
                         <th>#</th>
