@@ -1,4 +1,5 @@
 <?php
+    //header("Content-Type: application/json");
     require 'connect.php';
     require 'rpccalls.php';
 
@@ -6,27 +7,6 @@
         $link = $_POST["link_sub"];
         createTorrent($link);
         sleep(4);
-        header("location: index.php");
-    }
-
-    if(isset($_POST["remove"])) {
-        foreach ($_POST["checkbox"] as $hash) {
-            eraseTorrent($hash);
-        }
-        header("location: index.php");
-    }
-
-    if(isset($_POST["start"])) {
-        foreach ($_POST["checkbox"] as $hash) {
-            startTorrent($hash);
-        }
-        header("location: index.php");
-    }
-
-    if(isset($_POST["stop"])) {
-        foreach ($_POST["checkbox"] as $hash) {
-            stopTorrent($hash);
-        }
         header("location: index.php");
     }
 
@@ -38,9 +18,18 @@
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
+        <script>
+            function display() {
+                $('input[type=checkbox]').each(function() {
+                    var values = (this.checked ? $(this).val() : "");
+                    $('#hashes').html(values.toString());
+                });
+            }
+        </script>
         <p></p>
+        <div id="hashes"></div>
         <div style="width:90%;margin:auto">
-            <input type="submit" name="start" class="btn btn-success btn" value="Start">
+            <input type="submit" name="start" onclick="display()" class="btn btn-success btn" value="Start">
             <input type="submit" name="stop" class="btn btn-success btn" value="Stop">
             <input type="submit" name="remove" class="btn btn-success btn" value="Remove">
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Add</button>
@@ -86,10 +75,10 @@
                     <tr>
                         <th><input type="checkbox" onclick="toggle(this)" /></th>
                         <th>Name</th>
+                        <th>Status</th>
                         <th>Size</th>
                         <th>Done</th>
-                        <!--<th>Seeds</th>
-                        <th>Peers</th>-->
+                        <!--<th>Peers</th>-->
                         <th>Down Speed</th>
                         <th>Up Speed</th>
                         <th>ETA</th>
@@ -98,66 +87,62 @@
                     </tr>
                 </thead>
                 <?php
-                    $arr = getDownloadList();
-                    $i = 0;
+                    $arr = array_filter(getDownloadList());
                     foreach($arr as $val) {
+                ?>
+                        <script>
+                            function rate<?php echo $val ?>() {
+                                $.get("scripts/phpcalls.php?method=getRates&hash=<?php echo $val ?>", function(data) {
+                                    var arr = jQuery.parseJSON(data);
+                                    var p = arr.percent;
+                                    var down = arr.down;
+                                    var up = arr.up;
+                                    var ratio = arr.ratio;
+                                    $('#percent<?php echo $val ?>').html(Number(p).toFixed(2) + '%');
+                                    $('#down<?php echo $val ?>').html(down);
+                                    $('#up<?php echo $val ?>').html(up);
+                                    $('#ratio<?php echo $val ?>').html(Number(ratio).toFixed(2));
+                                });
+                            }
+                            setInterval(function(){rate<?php echo $val ?>()}, 1000);
+                        </script>
+                <?php
                         echo '<tr>';
 
                         echo '<td>' . "<input type='checkbox' name='checkbox[]' value='$val' />" . '</td>';
 
                         echo '<td>' . getName($val) . '</td>';
 
+                        echo '<td>' . "TODO" . '</td>';
+
                         echo '<td>' . getSize($val) . '</td>';
 
-                        echo '<td>';
+                        echo '<td>'
                 ?>
-                            <div id="progress<?php echo $val ?>"></div>
-                            <div id="message<?php echo $val ?>"></div>
-                            <script>
-                                function percentRate<?php echo $val ?>() {
-                                    $('#message<?php echo $val ?>').load('scripts/percent.php?hash=<?php echo $val ?>');
-                                }
-                                setInterval(function(){percentRate<?php echo $val ?>()}, 1000);
-                            </script>
-                <?php
-                        echo '</td>';
-                        echo '<td>';
-                ?>
-                            <div id='downrate<?php echo $val ?>'></div>
-                            <script>
-                                function loadDownRate<?php echo $val ?>() {
-                                    $('#downrate<?php echo $val ?>').load('scripts/downrate.php?hash=<?php echo $val ?>');
-                                }
-                                setInterval(function(){loadDownRate<?php echo $val ?>()}, 1000);
-                            </script>
-                <?php
-                        echo '</td>';
-                        echo '<td>';
-                ?>
-                            <div id='uprate<?php echo $val ?>'></div>
-                            <script>
-                                function loadUpRate<?php echo $val ?>() {
-                                    $('#uprate<?php echo $val ?>').load('scripts/uprate.php?hash=<?php echo $val ?>');
-                                }
-                                setInterval(function(){loadUpRate<?php echo $val ?>()}, 1000);
-                            </script>
+                        <div id="percent<?php echo $val ?>"></div>
                 <?php
                         echo '</td>';
 
-                        echo '<td>' . getETA($val) . '</td>';
+                        echo '<td>';
+                ?>
+                        <div id="down<?php echo $val ?>"></div>
+                <?php
+                        echo '</td>';
 
                         echo '<td>';
                 ?>
-                            <div id='ratio<?php echo $val ?>'></div>
-                            <script>
-                                function loadRatio<?php echo $val ?>() {
-                                    $('#ratio<?php echo $val ?>').load('scripts/ratio.php?hash=<?php echo $val ?>');
-                                }
-                                setInterval(function(){loadRatio<?php echo $val ?>()}, 1000);
-                            </script>
+                        <div id="up<?php echo $val ?>"></div>
                 <?php
                         echo '</td>';
-                        //echo '<td>' . $val . '</td>';
+
+                        echo '<td>' . 'TODO' . '</td>';
+
+                        echo '<td>';
+                ?>
+                        <div id="ratio<?php echo $val ?>"></div>
+                <?php
+                        echo '</td>';
+
                         echo '</tr>';
                     }
                     unset($val);

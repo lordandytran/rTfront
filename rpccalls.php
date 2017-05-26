@@ -5,26 +5,26 @@
 
     function sizeToString($size) {
         $dec = "";
-        if($size >= 1000000000000) {
-            $tb = intval($size / 1000000000000);
-            $offset = (string)($size % 1000000000000);
+        if($size >= 1099511627776) {
+            $tb = intval($size / 1099511627776);
+            $offset = (string)($size % 1099511627776);
             $dec .=  (string)$tb . "." . $offset[0]; //. $offset[1];
             return $dec . " TB";
         }
-        if($size >= 1000000000) {
-            $gb = intval($size / 1000000000);
-            $offset = (string)($size % 1000000000);
+        if($size >= 1073741824) {
+            $gb = intval($size / 1073741824);
+            $offset = (string)($size % 1073741824);
             $dec .=  (string)$gb . "." . $offset[0]; //. $offset[1];
             return $dec . " GB";
         }
-        if($size >= 1000000) {
-            $mb = intval($size / 1000000);
-            $offset = (string)($size % 1000000);
+        if($size >= 1048576) {
+            $mb = intval($size / 1048576);
+            $offset = (string)($size % 1048576);
             $dec .=  (string)$mb . "." . $offset[0]; //. $offset[1];
             return $dec . " MB";
         }
-        if($size >= 1000) {
-            $kb = intval($size / 1000);
+        if($size >= 1024) {
+            $kb = intval($size / 1024);
             return $kb . " KB";
         }
         return $size . " bytes";
