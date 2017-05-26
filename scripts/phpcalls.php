@@ -12,3 +12,28 @@
             'ratio' => getRatio($hash));
         echo json_encode($arr);
     }
+
+    function stop() {
+        foreach($_GET as $key => $value) {
+            stopTorrent($value);
+        }
+        unset($key);
+        unset($value);
+    }
+
+    function start() {
+        foreach($_GET as $key => $value) {
+            startTorrent($value);
+        }
+        unset($key);
+        unset($value);
+    }
+
+    function remove() {
+        foreach($_GET as $key => $value) {
+            eraseTorrent($value);
+        }
+        unset($key);
+        unset($value);
+        header("Refresh:0");
+    }

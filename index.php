@@ -1,5 +1,4 @@
 <?php
-    //header("Content-Type: application/json");
     require 'connect.php';
     require 'rpccalls.php';
 
@@ -19,19 +18,23 @@
     </head>
     <body>
         <script>
-            function display() {
-                $('input[type=checkbox]').each(function() {
-                    var values = (this.checked ? $(this).val() : "");
-                    $('#hashes').html(values.toString());
+            function display(method) {
+                var arr =[];
+                $('input[type=checkbox]:checked').each(function() {
+                    arr.push($(this).val());
                 });
+                var params = "scripts/phpcalls.php?method=" + method + "&";
+                for(var i = 0; i < arr.length; i++) {
+                    params += "hash" + i + "=" + arr[i] + "&";
+                }
+                $.get(params);
             }
         </script>
         <p></p>
-        <div id="hashes"></div>
         <div style="width:90%;margin:auto">
-            <input type="submit" name="start" onclick="display()" class="btn btn-success btn" value="Start">
-            <input type="submit" name="stop" class="btn btn-success btn" value="Stop">
-            <input type="submit" name="remove" class="btn btn-success btn" value="Remove">
+            <input type="submit" name="start" onclick="display('start')" class="btn btn-success btn" value="Start">
+            <input type="submit" name="stop" onclick="display('stop')" class="btn btn-success btn" value="Stop">
+            <input type="submit" name="remove" onclick="display('remove')" class="btn btn-success btn" value="Remove">
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Add</button>
             <a href="settings.php" class="btn btn-success btn" style="float:right">Settings</a>
         </div>

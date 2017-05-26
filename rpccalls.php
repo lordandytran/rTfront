@@ -8,19 +8,19 @@
         if($size >= 1099511627776) {
             $tb = intval($size / 1099511627776);
             $offset = (string)($size % 1099511627776);
-            $dec .=  (string)$tb . "." . $offset[0]; //. $offset[1];
+            $dec .=  (string)$tb . "." . $offset[0];
             return $dec . " TB";
         }
         if($size >= 1073741824) {
             $gb = intval($size / 1073741824);
             $offset = (string)($size % 1073741824);
-            $dec .=  (string)$gb . "." . $offset[0]; //. $offset[1];
+            $dec .=  (string)$gb . "." . $offset[0];
             return $dec . " GB";
         }
         if($size >= 1048576) {
             $mb = intval($size / 1048576);
             $offset = (string)($size % 1048576);
-            $dec .=  (string)$mb . "." . $offset[0]; //. $offset[1];
+            $dec .=  (string)$mb . "." . $offset[0];
             return $dec . " MB";
         }
         if($size >= 1024) {
