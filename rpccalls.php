@@ -102,11 +102,82 @@
     }
 
     function getETA($hash) {
-        return "";
+        $done = call('d.completed_bytes', $hash)[0];
+        $total = call('d.size_bytes', $hash)[0];
+        $rate = call('d.down.rate', $hash)[0];
+        if($rate == 0 || $done >= $total) {
+            return "∞";
+        }
+        $sec = intval(abs($total - $done) / $rate);
+
+        $ret = "";
+        $years = intval($sec / (31536000));
+
+        if($years > 0) {
+            $sec = intval($sec % (31536000));
+            $ret .= "{$years}y ";
+        }
+        $months = intval($sec / (2592000));
+        if($months > 0) {
+            $sec = intval($sec % (2592000));
+            $ret .= "{$months}m ";
+        }
+        $weeks = intval($sec / (604800));
+        if($weeks > 0) {
+            $sec = intval($sec % (604800));
+            $ret .= "{$weeks}w ";
+        }
+        $days = intval($sec / (86400));
+        if($days > 0) {
+            $sec = intval($sec % (86400));
+            $ret .= "{$days}d ";
+        }
+        $hours = intval($sec / (3600));
+        if($hours > 0) {
+            $sec = intval($sec % (3600));
+            $ret .= "{$hours}h ";
+        }
+        $minutes = intval($sec / 60);
+        if($minutes > 0) {
+            $sec = intval($sec % 60);
+            $ret .= "{$minutes}m ";
+        }
+        $ret .= "{$sec}s";
+        return $ret;
     }
 
     function isActive($hash) {
         return call('d.is_active', $hash)[0];
+    }
+
+    function isComplete($hash) {
+        return call('d.complete', $hash)[0];
+    }
+
+    function closeTorrent($hash) {
+        return call('d.close', $hash)[0];
+    }
+
+    function getCurrentConnection($hash) {
+        return call('d.connection_current', $hash)[0];
+    }
+
+    function getStatus($hash) {
+        $active = isActive($hash);
+        $complete = isComplete($hash);
+        $concurr = getCurrentConnection($hash);
+        if($active == 0) {
+            return "Stopped";
+        }
+        if($complete == 1) {
+            return "Complete";
+        }
+        if($active == 1 && $concurr == "leech") {
+            return "Leeching";
+        }
+        if($active == 1 && $complete == 1) {
+            return "Seeding";
+        }
     }
 
 ?>

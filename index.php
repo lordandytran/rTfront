@@ -8,7 +8,6 @@
         sleep(4);
         header("location: index.php");
     }
-
 ?>
 <html>
     <head>
@@ -28,6 +27,9 @@
                     params += "hash" + i + "=" + arr[i] + "&";
                 }
                 $.get(params);
+                if(method === 'remove') {
+                    location.reload();
+                }
             }
         </script>
         <p></p>
@@ -35,6 +37,7 @@
             <input type="submit" name="start" onclick="display('start')" class="btn btn-success btn" value="Start">
             <input type="submit" name="stop" onclick="display('stop')" class="btn btn-success btn" value="Stop">
             <input type="submit" name="remove" onclick="display('remove')" class="btn btn-success btn" value="Remove">
+            <!--<input type="submit" name="stat" class="btn btn-success btn" value="Stats">-->
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Add</button>
             <a href="settings.php" class="btn btn-success btn" style="float:right">Settings</a>
         </div>
@@ -84,7 +87,7 @@
                         <!--<th>Peers</th>-->
                         <th>Down Speed</th>
                         <th>Up Speed</th>
-                        <th>ETA</th>
+                        <th style="width:120px">ETA</th>
                         <th>Ratio</th>
                         <!--<th>Hash</th>-->
                     </tr>
@@ -97,26 +100,34 @@
                             function rate<?php echo $val ?>() {
                                 $.get("scripts/phpcalls.php?method=getRates&hash=<?php echo $val ?>", function(data) {
                                     var arr = jQuery.parseJSON(data);
+                                    var status = arr.status;
                                     var p = arr.percent;
                                     var down = arr.down;
                                     var up = arr.up;
                                     var ratio = arr.ratio;
+                                    var eta = arr.eta;
+                                    $('#status<?php echo $val ?>').html(status);
                                     $('#percent<?php echo $val ?>').html(Number(p).toFixed(2) + '%');
                                     $('#down<?php echo $val ?>').html(down);
                                     $('#up<?php echo $val ?>').html(up);
                                     $('#ratio<?php echo $val ?>').html(Number(ratio).toFixed(2));
+                                    $('#eta<?php echo $val ?>').html(eta);
                                 });
                             }
                             setInterval(function(){rate<?php echo $val ?>()}, 1000);
                         </script>
-                <?php
-                        echo '<tr>';
 
+                        <tr id="<?php echo $val ?>">
+                <?php
                         echo '<td>' . "<input type='checkbox' name='checkbox[]' value='$val' />" . '</td>';
 
                         echo '<td>' . getName($val) . '</td>';
 
-                        echo '<td>' . "TODO" . '</td>';
+                        echo '<td>';
+                ?>
+                        <div id="status<?php echo $val ?>"></div>
+                <?php
+                        echo '</td>';
 
                         echo '<td>' . getSize($val) . '</td>';
 
@@ -138,7 +149,11 @@
                 <?php
                         echo '</td>';
 
-                        echo '<td>' . 'TODO' . '</td>';
+                        echo '<td>';
+                ?>
+                        <div id="eta<?php echo $val ?>" style="width:120px"></div>
+                <?php
+                        echo '</td>';
 
                         echo '<td>';
                 ?>
@@ -152,6 +167,7 @@
                 ?>
             </table>
         </div>
+        <div id="stat-wrap"></div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
     </body>

@@ -6,10 +6,12 @@
 
     function getRates() {
         $hash = $_GET['hash'];
-        $arr = array('percent' => getPercentDone($hash),
+        $arr = array('status' => getStatus($hash),
+            'percent' => getPercentDone($hash),
             'down' => getDownRate($hash),
             'up' => getUpRate($hash),
-            'ratio' => getRatio($hash));
+            'ratio' => getRatio($hash),
+            'eta' => getETA($hash));
         echo json_encode($arr);
     }
 
@@ -31,9 +33,11 @@
 
     function remove() {
         foreach($_GET as $key => $value) {
+            stopTorrent($value);
+            closeTorrent($value);
             eraseTorrent($value);
         }
         unset($key);
         unset($value);
-        header("Refresh:0");
     }
+
