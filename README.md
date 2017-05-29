@@ -4,8 +4,11 @@ rTorrent Web Frontend
 
 Dependencies
  - Web Server with PHP and SCGI enabled
- - rTorrent configured with xmlrpc
+ - php-xmlrpc module for PHP
+ - rTorrent configured with xmlrpc-c
 
+Please refer to this page to get everything set up
+https://github.com/rakshasa/rtorrent/wiki/RPC-Setup-XMLRPC
 
 Instructions
  - Ensure Web Server can communicate with rTorrent
