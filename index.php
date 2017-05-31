@@ -5,7 +5,7 @@
     if(isset($_POST["submit_link"])) {
         $link = $_POST["link_sub"];
         createTorrent($link);
-        sleep(4);
+        sleep(5);
         header("location: index.php");
     }
 ?>
@@ -27,12 +27,11 @@
                     params += "hash" + i + "=" + arr[i] + "&";
                 }
                 $.get(params);
-                if(method === 'remove') {
-                    location.reload();
-                }
+                location.reload();
             }
         </script>
         <p></p>
+        <div id="hashes"></div>
         <div style="width:90%;margin:auto">
             <input type="submit" name="start" onclick="display('start')" class="btn btn-success btn" value="Start">
             <input type="submit" name="stop" onclick="display('stop')" class="btn btn-success btn" value="Stop">
@@ -76,7 +75,7 @@
             }
         </script>
         <div id="table-wrap">
-            <table class="table table-bordered table-striped" style="width:90%;margin:auto">
+            <table class="table table-bordered table-striped table-hover" style="width:90%;margin:auto">
                 <thead>
                     <tr>
                         <th><input type="checkbox" onclick="toggle(this)" /></th>
@@ -94,70 +93,60 @@
                 </thead>
                 <?php
                     $arr = array_filter(getDownloadList());
-                    foreach($arr as $val) {
-                ?>
+                    $arr = array_reverse($arr);
+                    foreach($arr as $val) { ?>
                         <script>
                             function rate<?php echo $val ?>() {
                                 $.get("scripts/phpcalls.php?method=getRates&hash=<?php echo $val ?>", function(data) {
                                     var arr = jQuery.parseJSON(data);
-                                    var status = arr.status;
-                                    var p = arr.percent;
-                                    var down = arr.down;
-                                    var up = arr.up;
-                                    var ratio = arr.ratio;
-                                    var eta = arr.eta;
-                                    $('#status<?php echo $val ?>').html(status);
-                                    $('#percent<?php echo $val ?>').html(Number(p).toFixed(2) + '%');
-                                    $('#down<?php echo $val ?>').html(down);
-                                    $('#up<?php echo $val ?>').html(up);
-                                    $('#ratio<?php echo $val ?>').html(Number(ratio).toFixed(2));
-                                    $('#eta<?php echo $val ?>').html(eta);
+                                    $('#status<?php echo $val ?>').html(arr.status);
+                                    $('#percent<?php echo $val ?>').html(Number(arr.percent).toFixed(2) + '%');
+                                    $('#down<?php echo $val ?>').html(arr.down);
+                                    $('#up<?php echo $val ?>').html(arr.up);
+                                    $('#ratio<?php echo $val ?>').html(Number(arr.ratio).toFixed(2));
+                                    $('#eta<?php echo $val ?>').html(arr.eta);
                                 });
                             }
-                            setInterval(function(){rate<?php echo $val ?>()}, 1000);
+                            var active = <?php boolActive($val) ?>;
+                            if(active) {
+                                setInterval(function(){rate<?php echo $val ?>()}, 1000);
+                            }
                         </script>
-
                         <tr id="<?php echo $val ?>">
                 <?php
                         echo '<td>' . "<input type='checkbox' name='checkbox[]' value='$val' />" . '</td>';
 
                         echo '<td>' . getName($val) . '</td>';
 
-                        echo '<td>';
-                ?>
-                        <div id="status<?php echo $val ?>"></div>
+                        echo '<td>'; ?>
+                        <div id="status<?php echo $val ?>"><?php echo getStatus($val) ?></div>
                 <?php
                         echo '</td>';
 
                         echo '<td>' . getSize($val) . '</td>';
 
-                        echo '<td>'
-                ?>
+                        echo '<td>' ?>
                         <div id="percent<?php echo $val ?>"></div>
                 <?php
                         echo '</td>';
 
-                        echo '<td>';
-                ?>
+                        echo '<td>'; ?>
                         <div id="down<?php echo $val ?>"></div>
                 <?php
                         echo '</td>';
 
-                        echo '<td>';
-                ?>
+                        echo '<td>'; ?>
                         <div id="up<?php echo $val ?>"></div>
                 <?php
                         echo '</td>';
 
-                        echo '<td>';
-                ?>
-                        <div id="eta<?php echo $val ?>" style="width:120px"></div>
+                        echo '<td>'; ?>
+                        <div id="eta<?php echo $val ?>" style="width:120px">∞</div>
                 <?php
                         echo '</td>';
 
-                        echo '<td>';
-                ?>
-                        <div id="ratio<?php echo $val ?>"></div>
+                        echo '<td>'; ?>
+                        <div id="ratio<?php echo $val ?>"><?php printf("%.2f", getRatio($val)) ?></div>
                 <?php
                         echo '</td>';
 

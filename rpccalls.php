@@ -169,15 +169,23 @@
         if($active == 0) {
             return "Stopped";
         }
-        if($complete == 1) {
+        if($active == 1 && $complete == 1) {
+            return "Seeding";
+        }
+        if($complete == 1) { //This condition may never be reached
             return "Complete";
         }
         if($active == 1 && $concurr == "leech") {
             return "Leeching";
         }
-        if($active == 1 && $complete == 1) {
-            return "Seeding";
-        }
+        return "NA";
     }
 
+    function boolActive($hash) {
+        $active = isActive($hash);
+        if($active == 1) {
+            echo true;
+        }
+        echo false;
+    }
 ?>
