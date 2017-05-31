@@ -15,6 +15,10 @@
         echo json_encode($arr);
     }
 
+    function getStats() {
+        $hash = $_GET['hash'];
+    }
+
     function stop() {
         foreach($_GET as $key => $value) {
             stopTorrent($value);

@@ -30,41 +30,24 @@
                 location.reload();
             }
         </script>
+        <nav class="navbar navbar-inverse" role="navigation">
+            <span class="navbar-brand" style="margin-left: 5%">rTfront</span>
+            <ul class="nav navbar-nav">
+                <li>
+                    <a href="#settingsModal" data-toggle="modal" data-target="#settingsModal">Settings</a>
+                </li>
+            </ul>
+        </nav>
+        <?php include 'settings.php'?>
         <p></p>
-        <div id="hashes"></div>
         <div style="width:90%;margin:auto">
-            <input type="submit" name="start" onclick="display('start')" class="btn btn-success btn" value="Start">
-            <input type="submit" name="stop" onclick="display('stop')" class="btn btn-success btn" value="Stop">
-            <input type="submit" name="remove" onclick="display('remove')" class="btn btn-success btn" value="Remove">
+            <input type="submit" name="start" onclick="display('start')" class="btn btn-default" value="Start">
+            <input type="submit" name="stop" onclick="display('stop')" class="btn btn-default" value="Stop">
+            <input type="submit" name="remove" onclick="display('remove')" class="btn btn-default" value="Remove">
             <!--<input type="submit" name="stat" class="btn btn-success btn" value="Stats">-->
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Add</button>
-            <a href="settings.php" class="btn btn-success btn" style="float:right">Settings</a>
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addModal">Add</button>
         </div>
-        <div id="myModal" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        Add magnet link or path to torrent
-                    </div>
-                    <div class="modal-body">
-                        <div class="submit-wrap">
-                            <form id="sub-link" method="post">
-                                <div class="submit-form">
-                                    <label>
-                                        <input type="text" name="link_sub" class="form-control" placeholder="$link" required/>
-                                    </label>
-                                    <input type="submit" name="submit_link" class="btn btn-success btn" value="Add">
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <?php include 'addmod.php'?>
         <p></p>
         <script language="JavaScript">
             function toggle(source) {
@@ -75,7 +58,7 @@
             }
         </script>
         <div id="table-wrap">
-            <table class="table table-bordered table-striped table-hover" style="width:90%;margin:auto">
+            <table class="table table-bordered table-striped table-hover" data-spy="scroll" style="width:90%;margin:auto">
                 <thead>
                     <tr>
                         <th><input type="checkbox" onclick="toggle(this)" /></th>
@@ -112,7 +95,7 @@
                                 setInterval(function(){rate<?php echo $val ?>()}, 1000);
                             }
                         </script>
-                        <tr id="<?php echo $val ?>">
+                        <tr id="<?php echo $val ?>" onclick="statDisplay('<?php echo $val ?>')">
                 <?php
                         echo '<td>' . "<input type='checkbox' name='checkbox[]' value='$val' />" . '</td>';
 
@@ -126,7 +109,7 @@
                         echo '<td>' . getSize($val) . '</td>';
 
                         echo '<td>' ?>
-                        <div id="percent<?php echo $val ?>"></div>
+                        <div id="percent<?php echo $val ?>"><?php printf("%.2f%%", getPercentDone($val)) ?></div>
                 <?php
                         echo '</td>';
 
@@ -156,7 +139,8 @@
                 ?>
             </table>
         </div>
-        <div id="stat-wrap"></div>
+        <p></p>
+        <?php include 'stats.php'?>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
     </body>
