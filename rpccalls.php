@@ -97,7 +97,7 @@
         return ($done / $total) * 100;
     }
 
-    function getDirectory($hash) {
+    function getTorrentDirectory($hash) {
         return call('d.directory_base', $hash)[0];
     }
 
@@ -188,4 +188,33 @@
         }
         echo false;
     }
+
+    function getMaxUpRate() {
+        $min = call('throttle.global_up.max_rate', "")[0];
+        if($min == 0) {
+            return "No limit";
+        }
+        else {
+            return $min . " KB/s";
+        }
+    }
+
+    function getMaxDownRate() {
+        $max = call('throttle.global_down.max_rate', "")[0];
+        if($max == 0) {
+            return "No limit";
+        }
+        else {
+            return $max . " KB/s";
+        }
+    }
+
+    function getMaxRatio() {
+        return call('ratio.max', "")[0] / 1000;
+    }
+
+    function getDefaultDirectory() {
+        return call('directory.default', "")[0];
+    }
+
 ?>

@@ -17,6 +17,7 @@
 
     function getStats() {
         $hash = $_GET['hash'];
+
     }
 
     function stop() {
@@ -43,6 +44,8 @@
         }
         unset($key);
         unset($value);
+        //Sleep for 1 second to allow successful time to remove
+        sleep(1);
     }
 ?>
 

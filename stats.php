@@ -1,22 +1,18 @@
-<script>
-    function statDisplay(hash) {
-        var str = "scripts/phpcalls.php?method=getStats&hash=";
-        str += hash;
-        $.get(str, function(data) {
-            var stats = jQuery.parseJSON(data);
-            $('#stat-wrap').show();
-        });
-    }
-</script>
-<div id="stat-wrap" style="width:85%;margin:auto;display:none">
-    <div id="stat-tab">
-        <input type="submit" name="general" class="btn btn-success" value="General">
-        <input type="submit" name="trackers" class="btn btn-success" value="Trackers">
-        <input type="submit" name="peers" class="btn btn-success" value="Peers">
-        <input type="submit" name="files" class="btn btn-success" value="Files">
-    </div>
-    <div id="stat-content-wrap">
-        <div id="stat-content" style="min-height:400px"></div>
-        <input type="submit" name="stat_change" class="btn btn-success" style="float:right" value="Apply">
+<div id="statsModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                Global Settings
+            </div>
+            <div class="modal-body">
+                <div class="submit-wrap">
+                    Global Settings here
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
 </div>

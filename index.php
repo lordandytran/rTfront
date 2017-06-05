@@ -5,6 +5,7 @@
     if(isset($_POST["submit_link"])) {
         $link = $_POST["link_sub"];
         createTorrent($link);
+        //sleep for 5 seconds to allow rTorrent to retrieve name of new download
         sleep(5);
         header("location: index.php");
     }
@@ -34,11 +35,12 @@
             <span class="navbar-brand" style="margin-left: 5%">rTfront</span>
             <ul class="nav navbar-nav">
                 <li>
-                    <a href="#settingsModal" data-toggle="modal" data-target="#settingsModal">Settings</a>
+                    <!--<a href="#" data-toggle="modal" data-target="#settingsModal">Settings</a>-->
+                    <a href="settings.php">Settings</a>
                 </li>
             </ul>
         </nav>
-        <?php include 'settings.php'?>
+        <?php //include 'settings.php'?>
         <p></p>
         <div style="width:90%;margin:auto">
             <input type="submit" name="start" onclick="display('start')" class="btn btn-default" value="Start">
@@ -49,7 +51,7 @@
         </div>
         <?php include 'addmod.php'?>
         <p></p>
-        <script language="JavaScript">
+        <script>
             function toggle(source) {
                 var checkboxes = document.getElementsByName('checkbox[]');
                 for(var i = 0, n = checkboxes.length; i < n; i++) {
@@ -58,7 +60,7 @@
             }
         </script>
         <div id="table-wrap">
-            <table class="table table-bordered table-striped table-hover" data-spy="scroll" style="width:90%;margin:auto">
+            <table id="download-list" class="table table-bordered table-striped table-hover" data-spy="scroll" style="width:90%;margin:auto">
                 <thead>
                     <tr>
                         <th><input type="checkbox" onclick="toggle(this)" /></th>
@@ -66,12 +68,10 @@
                         <th>Status</th>
                         <th>Size</th>
                         <th>Done</th>
-                        <!--<th>Peers</th>-->
                         <th>Down Speed</th>
                         <th>Up Speed</th>
                         <th style="width:120px">ETA</th>
                         <th>Ratio</th>
-                        <!--<th>Hash</th>-->
                     </tr>
                 </thead>
                 <?php
@@ -82,6 +82,9 @@
                             function rate<?php echo $val ?>() {
                                 $.get("scripts/phpcalls.php?method=getRates&hash=<?php echo $val ?>", function(data) {
                                     var arr = jQuery.parseJSON(data);
+                                    if(arr.status === "Stopped") {
+                                        location.reload();
+                                    }
                                     $('#status<?php echo $val ?>').html(arr.status);
                                     $('#percent<?php echo $val ?>').html(Number(arr.percent).toFixed(2) + '%');
                                     $('#down<?php echo $val ?>').html(arr.down);
@@ -90,12 +93,11 @@
                                     $('#eta<?php echo $val ?>').html(arr.eta);
                                 });
                             }
-                            var active = <?php boolActive($val) ?>;
-                            if(active) {
+                            if(Boolean(<?php boolActive($val) ?>)) {
                                 setInterval(function(){rate<?php echo $val ?>()}, 1000);
                             }
                         </script>
-                        <tr id="<?php echo $val ?>" onclick="statDisplay('<?php echo $val ?>')">
+                        <tr id="<?php echo $val ?>" class="row-click">
                 <?php
                         echo '<td>' . "<input type='checkbox' name='checkbox[]' value='$val' />" . '</td>';
 
@@ -140,7 +142,6 @@
             </table>
         </div>
         <p></p>
-        <?php include 'stats.php'?>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
     </body>
