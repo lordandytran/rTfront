@@ -10,9 +10,9 @@
                     <form id="sub-link" method="post">
                         <div class="submit-form">
                             <label>
-                                <input type="text" name="link_sub" class="form-control" placeholder="$link" required/>
+                                <input type="text" name="link_sub" class="form-control" placeholder="magnet link" required/>
                             </label>
-                            <input type="submit" name="submit_link" class="btn btn-success btn" value="Add">
+                            <input type="submit" name="submit_link" class="btn btn-success" value="Add">
                         </div>
                     </form>
                 </div>

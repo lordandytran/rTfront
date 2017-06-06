@@ -195,7 +195,7 @@
             return "No limit";
         }
         else {
-            return $min . " KB/s";
+            return ($min / 1024) . " KB/s";
         }
     }
 
@@ -205,7 +205,7 @@
             return "No limit";
         }
         else {
-            return $max . " KB/s";
+            return ($max / 1024) . " KB/s";
         }
     }
 
@@ -215,6 +215,23 @@
 
     function getDefaultDirectory() {
         return call('directory.default', "")[0];
+    }
+
+    function setDefaultDirectory($dir) {
+        shellCall('directory.default.set', $dir);
+    }
+
+    function setMaxUpRate($rate) {
+        shellCall('throttle.global_up.max_rate.set_kb', $rate);
+    }
+
+    function setMaxDownRate($rate) {
+        shellCall('throttle.global_down.max_rate.set_kb', $rate);
+    }
+
+    function setMaxRatio($ratio) {
+        $ratio = intval($ratio * 1000);
+        call('ratio.max.set', $ratio);
     }
 
 ?>

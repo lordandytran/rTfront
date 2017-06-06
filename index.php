@@ -93,7 +93,8 @@
                                     $('#eta<?php echo $val ?>').html(arr.eta);
                                 });
                             }
-                            if(Boolean(<?php boolActive($val) ?>)) {
+                            var isActive = <?php boolActive($val) ?>;
+                            if(isActive) {
                                 setInterval(function(){rate<?php echo $val ?>()}, 1000);
                             }
                         </script>
