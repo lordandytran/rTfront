@@ -21,7 +21,7 @@
         if(isset($_GET["max_ratio"])) {
             setMaxRatio($_GET["max_ratio"]);
         }
-        header("location: settings.php");
+        //header("location: settings.php");
     }
 
     if(isset($_GET["cust_submit"])) {
@@ -118,7 +118,7 @@
         </div>
         <p></p>
         <div id="location" style="width: 49%;float:right;min-height: 300px;margin-bottom:25px">
-            <h4><strong>Download Location</strong></h4>
+            <h4><strong>Default Download Location</strong></h4>
             <p></p>
             <form>
                 <label>
@@ -154,7 +154,7 @@
                 </form>
             </div>
             <p></p>
-            <h4><strong>Current Locations</strong></h4>
+            <h4><strong>Current Custom Locations</strong></h4>
             <p></p>
             <form id="locations-form-wrap" method="post">
             <table id="custom-location-table" class="table table-bordered table-striped table-hover">

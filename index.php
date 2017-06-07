@@ -4,8 +4,8 @@
 
     if(isset($_POST["submit_link"])) {
         $link = $_POST["link_sub"];
-        if(isset($_POST['locradio'])) {
-            $val = $_POST['locradio'];
+        if(isset($_POST['locationRadio'])) {
+            $val = $_POST['locationRadio'];
             $default = getDefaultDirectory();
             setDefaultDirectory($val);
             createTorrent($link);
@@ -25,7 +25,6 @@
     <head>
         <title>rTfront</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
         <script>
@@ -46,18 +45,15 @@
             <span class="navbar-brand" style="margin-left: 5%">rTfront</span>
             <ul class="nav navbar-nav">
                 <li>
-                    <!--<a href="#" data-toggle="modal" data-target="#settingsModal">Settings</a>-->
                     <a href="settings.php">Settings</a>
                 </li>
             </ul>
         </nav>
-        <?php //include 'settings.php'?>
         <p></p>
         <div style="width:90%;margin:auto">
             <input type="submit" name="start" onclick="display('start')" class="btn btn-default" value="Start">
             <input type="submit" name="stop" onclick="display('stop')" class="btn btn-default" value="Stop">
             <input type="submit" name="remove" onclick="display('remove')" class="btn btn-default" value="Remove">
-            <!--<input type="submit" name="stat" class="btn btn-success btn" value="Stats">-->
             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addModal">Add</button>
         </div>
         <?php include 'addmod.php'?>
@@ -109,48 +105,18 @@
                                 setInterval(function(){rate<?php echo $val ?>()}, 1000);
                             }
                         </script>
-                        <tr id="<?php echo $val ?>" class="row-click">
-                <?php
-                        echo '<td>' . "<input type='checkbox' name='checkbox[]' value='$val' />" . '</td>';
-
-                        echo '<td>' . getName($val) . '</td>';
-
-                        echo '<td>'; ?>
-                        <div id="status<?php echo $val ?>"><?php echo getStatus($val) ?></div>
-                <?php
-                        echo '</td>';
-
-                        echo '<td>' . getSize($val) . '</td>';
-
-                        echo '<td>' ?>
-                        <div id="percent<?php echo $val ?>"><?php printf("%.2f%%", getPercentDone($val)) ?></div>
-                <?php
-                        echo '</td>';
-
-                        echo '<td>'; ?>
-                        <div id="down<?php echo $val ?>"></div>
-                <?php
-                        echo '</td>';
-
-                        echo '<td>'; ?>
-                        <div id="up<?php echo $val ?>"></div>
-                <?php
-                        echo '</td>';
-
-                        echo '<td>'; ?>
-                        <div id="eta<?php echo $val ?>" style="width:120px">∞</div>
-                <?php
-                        echo '</td>';
-
-                        echo '<td>'; ?>
-                        <div id="ratio<?php echo $val ?>"><?php printf("%.2f", getRatio($val)) ?></div>
-                <?php
-                        echo '</td>';
-
-                        echo '</tr>';
-                    }
-                    unset($val);
-                ?>
+                        <tr id="<?php echo $val ?>">
+                            <td><input type='checkbox' name='checkbox[]' value='<?php echo $val ?>' /></td>
+                            <td><a href="stats.php?hash=<?php echo $val ?>"><?php echo getName($val)?></a></td>
+                            <td><div id="status<?php echo $val ?>"><?php echo getStatus($val) ?></div></td>
+                            <td><?php echo getSize($val) ?></td>
+                            <td><div id="percent<?php echo $val ?>"><?php printf("%.2f%%", getPercentDone($val)) ?></div></td>
+                            <td><div id="down<?php echo $val ?>"></div></td>
+                            <td><div id="up<?php echo $val ?>"></div></td>
+                            <td><div id="eta<?php echo $val ?>" style="width:120px">∞</div></td>
+                            <td><div id="ratio<?php echo $val ?>"><?php printf("%.2f", getRatio($val)) ?></div></td>
+                        </tr>
+                <?php } unset($val); ?>
             </table>
         </div>
         <p></p>

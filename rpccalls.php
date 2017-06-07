@@ -243,4 +243,47 @@
         shellHashCall('d.directory.set', $hash, $val);
     }
 
+    function getFileCount($hash) {
+        return call('d.size_files', $hash)[0];
+    }
+
+    function getFilePath($val) {
+        return call('f.get_path', $val)[0];
+    }
+
+    function getFileSize($val) {
+        $size = call('f.size_bytes', $val)[0];
+        return sizeToString($size);
+    }
+
+    function getFileChunks($val) {
+        return call('f.size_chunks', $val)[0];
+    }
+
+    function getCompletedFileChunks($val) {
+        return call('f.completed_chunks', $val)[0];
+    }
+
+    function getFilePercentDone($val) {
+        $total = getFileChunks($val);
+        $done = getCompletedFileChunks($val);
+        return ($done / $total) * 100;
+    }
+
+    function getFilePriority($val) {
+        return call('f.priority', $val)[0];
+    }
+
+    function priorityToString($priority) {
+        if($priority == 1) {
+            return "normal";
+        }
+        if($priority == 2) {
+            return "low";
+        }
+        if($priority == 3) {
+            return "high";
+        }
+        return "off";
+    }
 ?>

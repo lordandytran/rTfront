@@ -27,7 +27,7 @@
                                 echo '<strong>' . 'Select Custom Location' . '</strong>';
                                 foreach($customLocations as $key => $value) {
                                     echo '<div class="radio">';
-                                    echo '<label>' . '<input type="radio" name="locradio" value="' . $value. '">' . $value . '</label>';
+                                    echo '<label>' . '<input type="radio" name="locationRadio" value="' . $value. '">' . $key . " - ". $value . '</label>';
                                     echo '</div>';
                                 }
                                 unset($key);
