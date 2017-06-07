@@ -4,7 +4,18 @@
 
     if(isset($_POST["submit_link"])) {
         $link = $_POST["link_sub"];
-        createTorrent($link);
+        if(isset($_POST['locradio'])) {
+            $val = $_POST['locradio'];
+            $default = getDefaultDirectory();
+            setDefaultDirectory($val);
+            createTorrent($link);
+            sleep(5);
+            setDefaultDirectory($default);
+            header("location: index.php");
+        }
+        else {
+            createTorrent($link);
+        }
         //sleep for 5 seconds to allow rTorrent to retrieve name of new download
         sleep(5);
         header("location: index.php");

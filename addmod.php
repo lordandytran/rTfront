@@ -1,3 +1,10 @@
+<?php
+    $customLocations = array();
+    if(file_exists("locations.ser")) {
+        $file = file_get_contents("locations.ser");
+        $customLocations = unserialize($file);
+    }
+?>
 <div id="addModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -14,6 +21,19 @@
                             </label>
                             <input type="submit" name="submit_link" class="btn btn-success" value="Add">
                         </div>
+                        <p></p>
+                        <?php
+                            if(!empty($customLocations)) {
+                                echo '<strong>' . 'Select Custom Location' . '</strong>';
+                                foreach($customLocations as $key => $value) {
+                                    echo '<div class="radio">';
+                                    echo '<label>' . '<input type="radio" name="locradio" value="' . $value. '">' . $value . '</label>';
+                                    echo '</div>';
+                                }
+                                unset($key);
+                                unset($value);
+                            }
+                        ?>
                     </form>
                 </div>
             </div>

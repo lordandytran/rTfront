@@ -90,6 +90,11 @@
         call('load_start', $link);
     }
 
+    //loads torrent
+    function loadTorrent($link) {
+        call('load', $link);
+    }
+
     //returns percentage done of torrent
     function getPercentDone($hash) {
         $done = call('d.completed_bytes', $hash)[0];
@@ -232,6 +237,10 @@
     function setMaxRatio($ratio) {
         $ratio = intval($ratio * 1000);
         call('ratio.max.set', $ratio);
+    }
+
+    function setDirectory($hash, $val) {
+        shellHashCall('d.directory.set', $hash, $val);
     }
 
 ?>
