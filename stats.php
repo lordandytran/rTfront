@@ -2,6 +2,7 @@
     require 'connect.php';
     require 'rpccalls.php';
     $hash = $_GET['hash'];
+    $numfiles = getFileCount($hash);
 ?>
 <html>
 <head>
@@ -13,7 +14,10 @@
         function disp(method) {
             var params = "scripts/phpcalls.php?method=" + method + "&hash=<?php echo $hash ?>";
             $.get(params);
-            location.reload();
+            window.setTimeout(function() {
+                location.reload();
+            }, 1000);
+
         }
     </script>
     <nav class="navbar navbar-inverse" role="navigation">
@@ -43,7 +47,7 @@
                         $('#eta').html(arr.eta);
                     });
                 }
-                var isActive = <?php boolActive($hash) ?>;
+                var isActive = <?php echo boolActive($hash) ?>;
                 if(isActive) {
                     setInterval(function(){rate()}, 1000);
                 }
@@ -80,37 +84,83 @@
             </div>
         </div>
         <p></p>
-        <div id="content" style="width:90%;margin-left:auto;margin-right:auto;margin-bottom:25px">
+        <div id="content" style="width:60%;margin-bottom:25px">
             <h4>Content</h4>
+            <div id="data"></div>
             <p></p>
-            <table class="table table-condensed table-striped">
+            <script>
+                function files() {
+                    $.get("scripts/phpcalls.php?method=getFileStats&hash=<?php echo $hash ?>", function(data) {
+                        var arr = jQuery.parseJSON(data);
+                        if(arr.status === "Stopped") {
+                            location.reload();
+                        }
+                    <?php for($i = 0; $i < $numfiles; $i++) { ?>
+                        $('#file<?php echo $i ?>').html(Number(arr.<?php echo "file" . $i ?>).toFixed(2) + '%');
+                    <?php }?>
+                    });
+                }
+                var isActive = <?php echo boolActive($hash) ?>;
+                if(isActive) {
+                    setInterval(function(){files()}, 1000);
+                }
+            </script>
+            <table class="table table-bordered table-condensed table-striped">
                 <thead>
                     <th>#</th>
-                    <th>Name</th>
+                    <th>File Name</th>
                     <th>Size</th>
                     <th>Done</th>
                     <th>Priority</th>
                 </thead>
             <?php
-                $numfiles = getFileCount($hash);
                 for($i = 0; $i < $numfiles; $i++) {
                     $str = $hash . ":f" . $i; ?>
                 <tr>
                     <th scope="row"><?php echo ($i + 1) ?></th>
                     <td><?php echo getFilePath($str) ?></td>
                     <td><?php echo getFileSize($str) ?></td>
-                    <td><?php printf("%.2f%%", getFilePercentDone($str)) ?></td>
+                    <td><div id="file<?php echo $i ?>"><?php printf("%.2f%%", getFilePercentDone($str)) ?></div></td>
                     <td><?php echo getFilePriority($str) ?></td>
                 </tr>
             <?php } ?>
             </table>
         </div>
         <p></p>
-        <div id="peers" style="width:90%;margin-left:auto;margin-right:auto;margin-bottom:25px">
+        <div id="peers" style="width:90%;margin-bottom:25px">
             <h4>Peers</h4>
+            <p></p>
+            <script>
+                function peers() {
+                    $.get("scripts/phpcalls.php?method=getPeerStats&hash=<?php echo $hash ?>", function(data) {
+                        var arr = jQuery.parseJSON(data);
+                        if(arr.status === "Stopped") {
+                            location.reload();
+                        }
+                        var peers = arr.peers;
+                        for(var i = 0; i < peers; i++) {
+                            //TODO populate table rows
+                        }
+                    });
+                }
+                var isActive = <?php echo boolActive($hash) ?>;
+                if(isActive) {
+                    setInterval(function(){peers()}, 1000);
+                }
+            </script>
+            <table id="peer-table" class="table table-borders table-condensed table-striped">
+                <thead>
+                    <th>Address</th>
+                    <th>Version</th>
+                    <th>Completed</th>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
         </div>
         <p></p>
-        <div id="general" style="width:90%;margin-left:auto;margin-right:auto;margin-bottom:25px">
+        <div id="general" style="width:90%;margin-bottom:25px">
             <h4>General</h4>
         </div>
     </div>

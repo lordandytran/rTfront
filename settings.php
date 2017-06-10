@@ -21,7 +21,7 @@
         if(isset($_GET["max_ratio"])) {
             setMaxRatio($_GET["max_ratio"]);
         }
-        //header("location: settings.php");
+        header("location: settings.php");
     }
 
     if(isset($_GET["cust_submit"])) {
@@ -30,8 +30,9 @@
     }
 
     if(isset($_POST["remove_locations"])) {
+        global $customLocationArr;
         foreach($_POST['checkbox'] as $item) {
-            unset(($GLOBALS['customLocationArr'])[$item]);
+            unset($customLocationArr[$item]);
         }
         unset($item);
         repopulateArray();
@@ -56,13 +57,14 @@
     }
 
     function addCustomLocation($name, $location) {
-        if(array_key_exists($name, $GLOBALS['customLocationArr'])) {
+        global $customLocationArr;
+        if(array_key_exists($name, $customLocationArr)) {
             echo "Name already exists!";
         }
         else {
-            ($GLOBALS['customLocationArr'])[$name] = $location;
+            $customLocationArr[$name] = $location;
         }
-        $toWrite = serialize($GLOBALS['customLocationArr']);
+        $toWrite = serialize($customLocationArr);
         file_put_contents("locations.ser", $toWrite);
     }
 ?>
@@ -70,7 +72,6 @@
 <head>
     <title>rTfront</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <nav class="navbar navbar-inverse" role="navigation">

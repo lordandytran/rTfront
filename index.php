@@ -38,7 +38,9 @@
                     params += "hash" + i + "=" + arr[i] + "&";
                 }
                 $.get(params);
-                location.reload();
+                window.setTimeout(function() {
+                    location.reload();
+                }, 1000);
             }
         </script>
         <nav class="navbar navbar-inverse" role="navigation">
@@ -100,7 +102,7 @@
                                     $('#eta<?php echo $val ?>').html(arr.eta);
                                 });
                             }
-                            var isActive = <?php boolActive($val) ?>;
+                            var isActive = <?php echo boolActive($val) ?>;
                             if(isActive) {
                                 setInterval(function(){rate<?php echo $val ?>()}, 1000);
                             }

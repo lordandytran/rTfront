@@ -21,7 +21,7 @@
         }
         $length = strlen($request);
         fwrite($fp, "POST $rpc HTTP/1.0\r\n");
-        fwrite($fp, "User-Agent: lordandy\r\n");
+        fwrite($fp, "User-Agent: rTfront\r\n");
         fwrite($fp, "Host: $host:$port\r\n");
         fwrite($fp, "Content-Type: text/xml\r\n");
         fwrite($fp, "Content-Length: $length\r\n");

@@ -189,9 +189,9 @@
     function boolActive($hash) {
         $active = isActive($hash);
         if($active == 1) {
-            echo true;
+            return true;
         }
-        echo false;
+        return false;
     }
 
     function getMaxUpRate() {
@@ -271,7 +271,7 @@
     }
 
     function getFilePriority($val) {
-        return call('f.priority', $val)[0];
+        return priorityToString(call('f.priority', $val)[0]);
     }
 
     function priorityToString($priority) {
@@ -279,11 +279,24 @@
             return "normal";
         }
         if($priority == 2) {
-            return "low";
-        }
-        if($priority == 3) {
             return "high";
         }
-        return "off";
+        return "Do not download";
+    }
+
+    function getPeersConnected($hash) {
+        return call('d.peers_connected', $hash)[0];
+    }
+
+    function getPeerAddress($hash) {
+        return call('p.address', $hash)[0];
+    }
+
+    function getPeerVersion($hash) {
+        return call('p.client_version', $hash)[0];
+    }
+
+    function getPeerPercentCompleted($hash) {
+        return call('p.completed_percent', $hash)[0];
     }
 ?>
