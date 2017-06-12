@@ -45,16 +45,4 @@
         return $arr;
     }
 
-    function shellCall($method, $args) {
-        $output = shell_exec('xmlrpc ' . $GLOBALS['HOST'] . ':' . $GLOBALS['PORT'] . ' ' . $method . ' "" ' . $args);
-        $output = explode("\n",$output);
-        return $output;
-    }
-
-    function shellHashCall($method, $hash, $args) {
-        $output = shell_exec('xmlrpc ' . $GLOBALS['HOST'] . ':' . $GLOBALS['PORT'] . ' ' . $method . ' ' . $hash . ' ' . $args);
-        $output = explode("\n",$output);
-        return $output;
-    }
-
 ?>

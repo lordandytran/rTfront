@@ -15,22 +15,6 @@
         echo json_encode($arr);
     }
 
-    function getPeerStats() {
-        $hash = $_GET['hash'];
-        $peers = getPeersConnected($hash);
-        $arr = array('status' => getStatus($hash), 'peers' => $peers);
-        for($i = 0; $i < $peers; $i++) {
-            $addstr = "address" . $i;
-            $verstr = "version" . $i;
-            $compstr = "complete" . $i;
-            $valstr = $hash . ":p" . $i;
-            $arr[$addstr] = getPeerAddress($valstr);
-            $arr[$verstr] = getPeerVersion($valstr);
-            $arr[$compstr] = getPeerPercentCompleted($valstr);
-        }
-        echo json_encode($arr);
-    }
-
     function getFileStats() {
         $hash = $_GET['hash'];
         $num = getFileCount($hash);

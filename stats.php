@@ -84,7 +84,7 @@
             </div>
         </div>
         <p></p>
-        <div id="content" style="width:60%;margin-bottom:25px">
+        <div id="content" style="width:60%;margin-bottom:50px">
             <h4>Content</h4>
             <div id="data"></div>
             <p></p>
@@ -127,41 +127,39 @@
             </table>
         </div>
         <p></p>
-        <div id="peers" style="width:90%;margin-bottom:25px">
-            <h4>Peers</h4>
-            <p></p>
-            <script>
-                function peers() {
-                    $.get("scripts/phpcalls.php?method=getPeerStats&hash=<?php echo $hash ?>", function(data) {
-                        var arr = jQuery.parseJSON(data);
-                        if(arr.status === "Stopped") {
-                            location.reload();
-                        }
-                        var peers = arr.peers;
-                        for(var i = 0; i < peers; i++) {
-                            //TODO populate table rows
-                        }
-                    });
-                }
-                var isActive = <?php echo boolActive($hash) ?>;
-                if(isActive) {
-                    setInterval(function(){peers()}, 1000);
-                }
-            </script>
-            <table id="peer-table" class="table table-borders table-condensed table-striped">
-                <thead>
-                    <th>Address</th>
-                    <th>Version</th>
-                    <th>Completed</th>
-                </thead>
-                <tbody>
-
-                </tbody>
-            </table>
-        </div>
-        <p></p>
         <div id="general" style="width:90%;margin-bottom:25px">
             <h4>General</h4>
+            <p></p>
+            <form>
+                <label>
+                    <span style="display:inline-block">
+                        Max Down Rate (KB/s): <input type="text" name="max_down" class="form-control" />
+                    </span>
+                    <span style="display:inline-block">
+                        Current: <input type="text" class="form-control" placeholder="<?php //echo getMaxDownRate() ?>" readonly/>
+                    </span>
+                </label>
+                <p></p>
+                <label>
+                    <span style="display:inline-block">
+                        Max Up Rate (KB/s): <input type="text" name="max_up" class="form-control" />
+                    </span>
+                    <span style="display:inline-block">
+                        Current: <input type="text" class="form-control" placeholder="<?php //echo getMaxUpRate() ?>" readonly/>
+                    </span>
+                </label>
+                <p></p>
+                <label>
+                    <span style="display:inline-block">
+                        Max Ratio: <input type="text" name="max_ratio" class="form-control" />
+                    </span>
+                    <span style="display:inline-block">
+                        Current: <input type="text" class="form-control" placeholder="<?php //echo getMaxRatio() ?>" readonly/>
+                    </span>
+                </label>
+                <p></p>
+                <input type="submit" name="submit_torrent_rates" class="btn btn-success" value="Apply">
+            </form>
         </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>

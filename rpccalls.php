@@ -223,24 +223,20 @@
     }
 
     function setDefaultDirectory($dir) {
-        shellCall('directory.default.set', $dir);
+        call('directory.default.set', array('', $dir));
     }
 
     function setMaxUpRate($rate) {
-        shellCall('throttle.global_up.max_rate.set_kb', $rate);
+        call('throttle.global_up.max_rate.set_kb', array('', $rate));
     }
 
     function setMaxDownRate($rate) {
-        shellCall('throttle.global_down.max_rate.set_kb', $rate);
+        call('throttle.global_down.max_rate.set_kb', array('', $rate));
     }
 
     function setMaxRatio($ratio) {
         $ratio = intval($ratio * 1000);
         call('ratio.max.set', $ratio);
-    }
-
-    function setDirectory($hash, $val) {
-        shellHashCall('d.directory.set', $hash, $val);
     }
 
     function getFileCount($hash) {
@@ -286,6 +282,18 @@
 
     function getPeersConnected($hash) {
         return call('d.peers_connected', $hash)[0];
+    }
+
+    function getPeersNotConnected($hash) {
+        return call('d.get_peers_not_connected', $hash)[0];
+    }
+
+    function getNumLeechers($hash) {
+        return call('d.get_peers_accounted', $hash)[0];
+    }
+
+    function getNumSeeders($hash) {
+        return call('d.get_peers_complete', $hash)[0];
     }
 
     function getPeerAddress($hash) {
