@@ -3,6 +3,18 @@
     require 'scripts/rpccalls.php';
 
     $error = "";
+    $track = false;
+
+    function addTrackers() {
+        $file = fopen("uploads/trackers.txt", "r");
+        $list = array_reverse(array_filter(getDownloadList()));
+        while(!feof($file)) {
+            $num = getNumTrackers($list[0]);
+            addTracker($list[0], $num++, fgets($file));
+        }
+        fclose($file);
+        $GLOBALS['track'] = false;
+    }
 
     function process() {
         $list = array_reverse(array_filter(getDownloadList()));
@@ -13,6 +25,10 @@
                 return;
             }
             $time_end = time();
+        }
+        if(!$GLOBALS['track']) {
+            addTrackers();
+            process();
         }
         $GLOBALS['error'] = "Cannot track torrent";
         stopTorrent($hash);
@@ -27,7 +43,7 @@
                 $link = "/var/www/html/rTfront/" . $dir;
             }
         }
-        else {
+        if($link == '') {
             $link = $_POST["magnet_link"];
         }
         if(isset($_POST['locationRadio'])) {

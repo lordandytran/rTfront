@@ -54,18 +54,21 @@
     function getStats() {
         $hash = $_GET['hash'];
         $files = getFileCount($hash);
-        $stats = array(
+        $stats = array();
+        array_push($stats, array(
             getStatus($hash),
             getPercentDone($hash),
             getDownRate($hash),
             getUpRate($hash),
             getETA($hash),
             getRatio($hash)
-        );
+        ));
+        $temp = array();
         for($i = 0; $i < $files; $i++) {
             $str = $hash . ":f" . $i;
-            array_push($stats, getFilePercentDone($str));
+            array_push($temp, getFilePercentDone($str));
         }
+        array_push($stats, $temp);
         echo json_encode($stats);
     }
 ?>

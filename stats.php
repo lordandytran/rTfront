@@ -52,29 +52,29 @@
     </ul>
     <script>
         function stats() {
-            $.get('scripts/phpcalls.php?method=getStats&hash=<?php echo $hash ?>', function(data) {
+            $.get("scripts/phpcalls.php?method=getStats&hash=<?php echo $hash ?>", function(data) {
                 data = jQuery.parseJSON(data);
-                if(data[0] === "Stopped") {
+                if(data[0][0] === "Stopped") {
                     location.reload();
                 }
-                $(".status").html(data[0]);
-                $(".percent").html(Number(data[1]).toFixed(2) + '%');
-                $(".down").html(data[2]);
-                $(".up" ).html(data[3]);
-                $(".eta").html(data[4]);
-                $(".ratio").html(Number(data[5]).toFixed(2));
-                for(var i = 6; i < <?php echo $numfiles ?> + 6; i++) {
-                    $('.file' + (i - 6)).html(Number(data[i]).toFixed(2) + '%');
+                $(".status").html(data[0][0]);
+                $(".percent").html(Number(data[0][1]).toFixed(2) + '%');
+                $(".down").html(data[0][2]);
+                $(".up" ).html(data[0][3]);
+                $(".eta").html(data[0][4]);
+                $(".ratio").html(Number(data[0][5]).toFixed(2));
+                for(var i = 0; i < <?php echo $numfiles?>; i++) {
+                    $(".file" + i).html(Number(data[1][i]).toFixed(2) + '%');
                 }
             });
         }
-        var isActive = <?php boolActive($hash) ?>;
+        var isActive = <?php echo boolActive($hash) ?>;
         if(isActive) {
             setInterval(function(){stats()}, 1000);
         }
     </script>
     <div id="main">
-        <table class="bordered highlight responsive-table hide-on-med-and-down">
+        <table class="bordered highlight hide-on-med-and-down">
             <thead>
                 <tr>
                     <th>Name</th>
@@ -90,7 +90,7 @@
             </thead>
                 <tr>
                     <td><?php echo getName($hash)?></td>
-                    <td><div class="status"></div></td>
+                    <td><div class="status"><?php echo getStatus($hash) ?></div></td>
                     <td><?php echo getSize($hash) ?></td>
                     <td><div class="percent"><?php printf("%.2f%%", getPercentDone($hash)) ?></div></td>
                     <td><div class="down"></div></td>
@@ -100,16 +100,28 @@
                     <td><?php echo getPriority($hash) ?></td>
                 </tr>
         </table>
-        <div class="hide-on-large-only">Mobile View</div>
+        <div class="hide-on-large-only">
+            <ul class="collection">
+                <li class="collection-item truncate"><?php echo getName($hash)?></li>
+                <li class="collection-item"><strong>Status: </strong><span class="status"><?php echo getStatus($hash) ?></span></li>
+                <li class="collection-item"><strong>Size: </strong><?php echo getSize($hash) ?></li>
+                <li class="collection-item"><strong>Done: </strong><span class="percent"><?php printf("%.2f%%", getPercentDone($hash)) ?></span></li>
+                <li class="collection-item"><strong>Down Speed: </strong><span class="down"></span></li>
+                <li class="collection-item"><strong>Up Speed: </strong><span class="up"></span></li>
+                <li class="collection-item"><strong>ETA: </strong><span class="eta">∞</span></li>
+                <li class="collection-item"><strong>Ratio: </strong><span class="ratio"><?php printf("%.2f", getRatio($hash)) ?></span></li>
+                <li class="collection-item"><strong>Priority: </strong><?php echo getPriority($hash) ?></li>
+            </ul>
+        </div>
     </div>
     <div id="files">
-        <table class="bordered highlight responsive-table hide-on-med-and-down">
+        <table class="bordered highlight hide-on-med-and-down">
             <thead>
                 <tr>
                     <th>#</th>
                     <th>File Name</th>
                     <th>Size</th>
-                    <th>Done</th>
+                    <th style="width: 150px;">Done</th>
                     <th>Priority</th>
                 </tr>
             </thead>
@@ -120,7 +132,7 @@
                     <th scope="row"><?php echo ($i + 1) ?></th>
                     <td><?php echo getFilePath($str) ?></td>
                     <td><?php echo getFileSize($str) ?></td>
-                    <td><div class="file<?php echo $i ?>"><?php printf("%.2f%%", getFilePercentDone($str)) ?></div></td>
+                    <td style="width: 150px;"><div class="file<?php echo $i ?>"><?php printf("%.2f%%", getFilePercentDone($str)) ?></div></td>
                     <td><?php echo getFilePriority($str) ?></td>
                 </tr>
             <?php }?>
