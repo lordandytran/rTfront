@@ -1,31 +1,8 @@
 <?php
-    include '../connect.php';
-    include '../rpccalls.php';
+    include 'connect.php';
+    include 'rpccalls.php';
 
     echo $_GET['method']();
-
-    function getRates() {
-        $hash = $_GET['hash'];
-        $arr = array('status' => getStatus($hash),
-            'percent' => getPercentDone($hash),
-            'down' => getDownRate($hash),
-            'up' => getUpRate($hash),
-            'ratio' => getRatio($hash),
-            'eta' => getETA($hash));
-        echo json_encode($arr);
-    }
-
-    function getFileStats() {
-        $hash = $_GET['hash'];
-        $num = getFileCount($hash);
-        $arr = array('status' => getStatus($hash));
-        for($i = 0; $i < $num; $i++) {
-            $str = $hash . ":f" . $i;
-            $key = "file" . $i;
-            $arr[$key] = getFilePercentDone($str);
-        }
-        echo json_encode($arr);
-    }
 
     function stop() {
         foreach($_GET as $key => $value) {
@@ -38,6 +15,9 @@
     function start() {
         foreach($_GET as $key => $value) {
             startTorrent($value);
+            while(isHashing($value) != 0) {
+                continue;
+            }
         }
         unset($key);
         unset($value);
@@ -55,8 +35,37 @@
         sleep(1);
     }
 
-    function getRatesDetailed() {
+    function getRates() {
+        $arr = activeList();
+        $rates = array();
+        foreach($arr as $hash) {
+            array_push($rates, array($hash,
+                getStatus($hash),
+                getPercentDone($hash),
+                getDownRate($hash),
+                getUpRate($hash),
+                getETA($hash),
+                getRatio($hash)));
+        }
+        unset($hash);
+        echo json_encode($rates);
+    }
 
+    function getStats() {
+        $hash = $_GET['hash'];
+        $files = getFileCount($hash);
+        $stats = array(
+            getStatus($hash),
+            getPercentDone($hash),
+            getDownRate($hash),
+            getUpRate($hash),
+            getETA($hash),
+            getRatio($hash)
+        );
+        for($i = 0; $i < $files; $i++) {
+            $str = $hash . ":f" . $i;
+            array_push($stats, getFilePercentDone($str));
+        }
+        echo json_encode($stats);
     }
 ?>
-

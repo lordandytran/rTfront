@@ -1,6 +1,6 @@
 <?php
     function call($method, $args) {
-        return sendRequest(array('method'=>$method, 'args'=>$args));
+        return encodeRequest(array('method'=>$method, 'args'=>$args));
     }
 
     function sizeToString($size) {
@@ -167,21 +167,30 @@
         return call('d.connection_current', $hash)[0];
     }
 
+    function isHashing($hash) {
+        return call('d.hashing', $hash)[0];
+    }
+
     function getStatus($hash) {
         $active = isActive($hash);
         $complete = isComplete($hash);
         $concurr = getCurrentConnection($hash);
+        $hashing = isHashing($hash);
         if($active == 0) {
             return "Stopped";
-        }
-        if($active == 1 && $complete == 1) {
-            return "Seeding";
         }
         if($complete == 1) { //This condition may never be reached
             return "Complete";
         }
+        if($active == 1 && $complete == 1) {
+            return "Seeding";
+        }
+
         if($active == 1 && $concurr == "leech") {
             return "Leeching";
+        }
+        if($hashing > 0) {
+            return "Hashing";
         }
         return "NA";
     }
@@ -300,11 +309,42 @@
         return call('p.address', $hash)[0];
     }
 
-    function getPeerVersion($hash) {
-        return call('p.client_version', $hash)[0];
-    }
-
     function getPeerPercentCompleted($hash) {
         return call('p.completed_percent', $hash)[0];
+    }
+
+    function getNumTrackers($hash) {
+        return call('d.tracker_size', $hash)[0];
+    }
+
+    function addTracker($hash, $num, $url) {
+        call('d.tracker.insert', array($hash, $num, $url));
+    }
+
+    function getTracker($val) {
+        return call('t.get_url', $val)[0];
+    }
+
+    function activeList() {
+        $arr = array_filter(getDownloadList());
+        $ret = array();
+        foreach($arr as $i) {
+            if(boolActive($i)) {
+                array_push($ret, $i);
+            }
+        }
+        unset($i);
+        return $ret;
+    }
+
+    function fullActive() {
+        $arr = array_filter(getDownloadList());
+        foreach($arr as $i) {
+            if(boolActive($i)) {
+                return true;
+            }
+        }
+        unset($i);
+        return false;
     }
 ?>

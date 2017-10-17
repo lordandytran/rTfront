@@ -1,6 +1,6 @@
 <?php
-    require 'connect.php';
-    require 'rpccalls.php';
+    require 'scripts/connect.php';
+    require 'scripts/rpccalls.php';
 
     $customLocationArr = array();
     populateLocationArray();
