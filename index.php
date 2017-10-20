@@ -13,7 +13,7 @@
             addTracker($list[0], $num++, fgets($file));
         }
         fclose($file);
-        $GLOBALS['track'] = false;
+        $GLOBALS['track'] = true;
     }
 
     function process() {
@@ -194,7 +194,6 @@
                 <i class="large material-icons">add</i>
             </a>
         </div>
-        <div id="#test"></div>
         <script type="text/javascript" src="js/materialize.min.js"></script>
     </body>
 </html>

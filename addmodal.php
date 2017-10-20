@@ -37,7 +37,7 @@
             echo '<p></p>';
             foreach($customLocations as $key => $value) {
                 echo '<input class="with-gap" name="locationRadio" value="' . $value. '" type="radio" id="' . $value. '" />';
-                echo '<label for="' . $value. '">' . $key . " - ". $value . '</label>';
+                echo '<label for="' . $value. '">' . $key . " - ". $value . '</label></br>';
             }
             unset($key);
             unset($value);

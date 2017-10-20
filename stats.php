@@ -26,12 +26,18 @@
             }, 1000);
         }
     </script>
-    <nav class="nav-extended navbar-fixed">
+    <nav class="nav-extended">
         <div class="nav-wrapper">
             <a href="#" data-activates="menu" class="left button-collapse"><i class="material-icons">menu</i></a>
             <ul class="left hide-on-med-and-down">
                 <li><a href="index.php">Home</a></li>
                 <li><a href="settings.php">Settings</a></li>
+            </ul>
+            <ul class="right">
+                <li><a data-activates="add" class="dropdown-button"><i class="material-icons">more_vert</i></a></li>
+            </ul>
+            <ul class="dropdown-content" id="add">
+                <li><a href="#">Add Trackers</a></li>
             </ul>
             <ul class="right">
                 <li><a class="menu-icons" onclick="display('start')"><i class="material-icons">play_circle_outline</i></a></li>
@@ -50,6 +56,7 @@
         <li><a href="index.php">Home</a></li>
         <li><a href="settings.php">Settings</a></li>
     </ul>
+    <?php include 'trackers.php' ?>
     <script>
         function stats() {
             $.get("scripts/phpcalls.php?method=getStats&hash=<?php echo $hash ?>", function(data) {

@@ -5,28 +5,23 @@
     $customLocationArr = array();
     populateLocationArray();
 
-    if(isset($_GET["submit_location"])) {
-        $link = $_GET["directory_submit"];
-        setDefaultDirectory($link);
-        header("location: settings.php");
+    if(isset($_POST['global_rates'])) {
+        setMaxDownRate($_POST['down_rate']);
+        setMaxUpRate($_POST['up_rate']);
+        if($_POST['ratio'] == "") {
+
+        }
+        else {
+            setMaxRatio($_POST['ratio']);
+        }
     }
 
-    if(isset($_GET["submit_global_rates"])) {
-        if(isset($_GET["max_down"])) {
-            setMaxDownRate($_GET["max_down"]);
-        }
-        if(isset($_GET["max_up"])) {
-            setMaxUpRate($_GET["max_up"]);
-        }
-        if(isset($_GET["max_ratio"])) {
-            setMaxRatio($_GET["max_ratio"]);
-        }
-        header("location: settings.php");
+    if(isset($_POST['set_directory'])) {
+        setDefaultDirectory($_POST['directory']);
     }
 
-    if(isset($_GET["cust_submit"])) {
-        addCustomLocation($_GET["cust_name"], $_GET["cust_loc"]);
-        header("location: settings.php");
+    if(isset($_POST["custom_location"])) {
+        addCustomLocation($_POST["custom_name"], $_POST["location"]);
     }
 
     if(isset($_POST["remove_locations"])) {
@@ -36,14 +31,12 @@
         }
         unset($item);
         repopulateArray();
-        header("location: settings.php");
     }
 
     function repopulateArray() {
         $toWrite = serialize($GLOBALS['customLocationArr']);
         file_put_contents("locations.ser", $toWrite);
     }
-
     function populateLocationArray() {
         if(file_exists("locations.ser")) {
             $file = file_get_contents("locations.ser");
@@ -51,11 +44,9 @@
             $GLOBALS['customLocationArr'] = array_merge($GLOBALS['customLocationArr'], $arr);
         }
     }
-
     function getCustomLocations() {
         return $GLOBALS['customLocationArr'];
     }
-
     function addCustomLocation($name, $location) {
         global $customLocationArr;
         if(array_key_exists($name, $customLocationArr)) {
@@ -67,120 +58,141 @@
         $toWrite = serialize($customLocationArr);
         file_put_contents("locations.ser", $toWrite);
     }
+
 ?>
 <html>
-<head>
-    <title>rTfront</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-</head>
-<body>
-    <nav class="navbar navbar-inverse" role="navigation">
-        <a href="index.php" class="navbar-brand" style="margin-left: 5%">rTfront</a>
-        <ul class="nav navbar-nav">
-            <li>
-                <a href="#">Settings</a>
-            </li>
-        </ul>
-    </nav>
+    <head>
+        <title>rTfront</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+    <script>
+        $(document).ready(function(){
+            $(".button-collapse").sideNav();
+        });
+    </script>
+    <div class="navbar-fixed">
+        <nav>
+            <div class="nav-wrapper">
+                <a href="#" data-activates="mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+                <ul class="left hide-on-med-and-down">
+                    <li><a href="index.php">Home</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <ul class="side-nav" id="mobile">
+        <li><a href="index.php">Home</a></li>
+    </ul>
     <p></p>
-    <div id="settings-wrap" style="width:60%;margin:auto">
-        <div id="rate-limits" style="width: 49%;float:left;min-height: 300px;margin-bottom:25px">
-            <h4><strong>Global Rate Limits</strong></h4>
-            <form>
-                <label>
-                    <span style="display:inline-block">
-                        Max Down Rate (KB/s): <input type="text" name="max_down" class="form-control" />
-                    </span>
-                    <span style="display:inline-block">
-                        Current: <input type="text" class="form-control" placeholder="<?php echo getMaxDownRate() ?>" readonly/>
-                    </span>
-                </label>
-                <p></p>
-                <label>
-                    <span style="display:inline-block">
-                        Max Up Rate (KB/s): <input type="text" name="max_up" class="form-control" />
-                    </span>
-                    <span style="display:inline-block">
-                        Current: <input type="text" class="form-control" placeholder="<?php echo getMaxUpRate() ?>" readonly/>
-                    </span>
-                </label>
-                <p></p>
-                <label>
-                    <span style="display:inline-block">
-                        Max Ratio: <input type="text" name="max_ratio" class="form-control" />
-                    </span>
-                    <span style="display:inline-block">
-                        Current: <input type="text" class="form-control" placeholder="<?php echo getMaxRatio() ?>" readonly/>
-                    </span>
-                </label>
-                <p></p>
-                <input type="submit" name="submit_global_rates" class="btn btn-success" value="Apply">
-            </form>
-        </div>
-        <p></p>
-        <div id="location" style="width: 49%;float:right;min-height: 300px;margin-bottom:25px">
-            <h4><strong>Default Download Location</strong></h4>
-            <p></p>
-            <form>
-                <label>
-                    Input Default Directory: <input type="text" name="directory_submit" class="form-control" required />
-                    Current: <input type="text" class="form-control" placeholder="<?php echo getDefaultDirectory() ?>" readonly/>
-                </label>
-                <p></p>
-                <input type="submit" name="submit_location" class="btn btn-success" value="Apply">
-            </form>
-        </div>
-        <script>
-            function toggleLocations(source) {
-                var checkboxes = document.getElementsByName('checkbox[]');
-                for(var i = 0, n = checkboxes.length; i < n; i++) {
-                    checkboxes[i].checked = source.checked;
-                }
-            }
-        </script>
-        <div id="customlocations" style="width:49%;margin-bottom:25px">
-            <div style="margin-bottom:25px">
-                <h4><strong>Custom Locations</strong></h4>
-                <p></p>
-                <form>
-                    <label>
-                        <span style="display:inline-block">
-                            Enter Custom Name: <input type="text" name="cust_name" class="form-control" required />
-                        </span>
-                        <span style="display:inline-block">
-                            Enter Download Location: <input type="text" name="cust_loc" class="form-control" required/>
-                        </span>
-                    </label>
-                    <input type="submit" name="cust_submit" class="btn btn-success" style="display:inline-block" value="Add">
+    <div class="row">
+        <div class="col s12 m6">
+            <div class="card">
+                <form name="global_rates" method="post">
+                <div class="card-content">
+                    <span class="card-title">Global Rate Limits</span>
+                    <p></p>
+                    <label for="down_rate"><strong>Set Max Down Rate (KB/s):</strong></label>
+                    <input placeholder="Current: <?php echo getMaxDownRate() ?>" id="down_rate" name="down_rate" type="text" class="validate">
+                    <p></p>
+                    <label for="up_rate"><strong>Set Max Up Rate (KB/s):</strong></label>
+                    <input placeholder="Current: <?php echo getMaxUpRate() ?>" id="up_rate" name="up_rate" type="text" class="validate">
+                    <p></p>
+                    <label for="ratio"><strong>Set Max Ratio:</strong></label>
+                    <input placeholder="Current: <?php echo getMaxRatio() ?>" id="ratio" name="ratio" type="text" class="validate">
+                </div>
+                <div class="card-action">
+                    <button type="submit" name="global_rates" class="btn waves-effect waves-light">Apply</button>
+                </div>
                 </form>
             </div>
-            <p></p>
-            <h4><strong>Current Custom Locations</strong></h4>
-            <p></p>
-            <form id="locations-form-wrap" method="post">
-            <table id="custom-location-table" class="table table-bordered table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th><input type="checkbox" onclick="toggleLocations(this)" /></th>
-                        <th>Name</th>
-                        <th>Custom Location</th>
-                    </tr>
-                </thead>
-                <?php
-                    foreach($customLocationArr as $key => $value) {
-                        echo '<tr>';
-                        echo '<td>' . "<input type='checkbox' name='checkbox[]' value='$key' />" . '</td>';
-                        echo '<td>' . $key . '</td>';
-                        echo '<td>' . $value . '</td>';
-                        echo '</tr>';
-                    }
-                    unset($key);
-                    unset($value);
-                ?>
-            </table>
-            <input type="submit" name="remove_locations" class="btn btn-success" value="Remove">
-            </form>
+        </div>
+        <div class="col s12 m6">
+            <div class="card">
+                <form name="set_directory" method="post">
+                <div class="card-content">
+                    <span class="card-title">Default Download Location</span>
+                    <p></p>
+                    <label for="directory"><strong>Input Default Directory:</strong></label>
+                    <input placeholder="Current: <?php echo getDefaultDirectory() ?>" id="directory" name="directory" type="text" class="validate" required>
+                </div>
+                <div class="card-action">
+                    <button type="submit" name="set_directory" class="btn waves-effect waves-light">Apply</button>
+                </div>
+                </form>
+            </div>
         </div>
     </div>
-</body>
+    <p></p>
+    <script>
+        function toggleLocations(source) {
+            var checkboxes = document.getElementsByName('checkbox[]');
+            for(var i = 0, n = checkboxes.length; i < n; i++) {
+                checkboxes[i].checked = source.checked;
+            }
+        }
+    </script>
+    <div class="row">
+        <div class="col s12 m6">
+            <div class="card">
+                <form name="custom_location" method="post">
+                <div class="card-content">
+                    <span class="card-title">Custom Locations</span>
+                    <p></p>
+                    <label for="custom_name"><strong>Enter Custom Name:</strong></label>
+                    <input id="custom_name" name="custom_name" type="text" class="validate" required>
+                    <p></p>
+                    <label for="location"><strong>Enter Download Location:</strong></label>
+                    <input id="location" name="location" type="text" class="validate" required>
+
+                </div>
+                <div class="card-action">
+                    <button type="submit" name="custom_location" class="btn waves-effect waves-light">Add</button>
+                </div>
+                </form>
+            </div>
+        </div>
+        <div class="col s12 m6">
+            <div class="card">
+                <form name="remove_locations" method="post">
+                <div class="card-content">
+                    <span class="card-title">Current Custom Locations</span>
+                    <table class="bordered highlight">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" onclick="toggleLocations(this)" class="filled-in" id="check-all"/>
+                                    <label for="check-all"></label>
+                                </th>
+                                <th>Name</th>
+                                <th>Custom Locations</th>
+                            </tr>
+                        </thead>
+                        <?php
+                        foreach($customLocationArr as $key => $value) { ?>
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="checkbox[]" value="<?php echo $key ?>" id="<?php echo $key ?>"/>
+                                    <label for="<?php echo $key?>"></label>
+                                </td>
+                                <td><?php echo $key ?></td>
+                                <td><?php echo $value ?></td>
+                            </tr>
+                        <?php }
+                        unset($key);
+                        unset($value); ?>
+                    </table>
+                </div>
+                <div class="card-action">
+                    <button type="submit" name="remove_locations" class="btn waves-effect waves-light">Remove</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="js/materialize.min.js"></script>
+    </body>
 </html>
