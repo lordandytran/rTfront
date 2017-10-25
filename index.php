@@ -2,14 +2,13 @@
     require 'scripts/connect.php';
     require 'scripts/rpccalls.php';
 
-    $error = "";
     $track = false;
 
     function addTrackers() {
         $file = fopen("uploads/trackers.txt", "r");
         $list = array_reverse(array_filter(getDownloadList()));
+        $num = getNumTrackers($list[0]);
         while(!feof($file)) {
-            $num = getNumTrackers($list[0]);
             addTracker($list[0], $num++, fgets($file));
         }
         fclose($file);
@@ -61,7 +60,7 @@
         header("location: index.php");
     }
 
-    $download_list = array_reverse(array_filter(getDownloadList()));
+    $download_list = array_reverse(getRatesStatic());
 
 ?>
 <html>
@@ -175,19 +174,19 @@
             foreach($download_list as $val) { ?>
                 <tr>
                     <td>
-                        <input type="checkbox" class="filled-in desktop-check" name='checkbox[]' onclick="$('#c<?php echo $val?>').click()" value="<?php echo $val?>" id="<?php echo $val?>" />
-                        <label for="<?php echo $val?>"></label>
+                        <input type="checkbox" class="filled-in desktop-check" name='checkbox[]' onclick="$('#c<?php echo $val['hash'] ?>').click()" value="<?php echo $val['hash'] ?>" id="<?php echo $val['hash'] ?>" />
+                        <label for="<?php echo $val['hash'] ?>"></label>
                     </td>
-                    <td><a href="stats.php?hash=<?php echo $val?>"><?php echo getName($val)?></a></td>
-                    <td><div class="status<?php echo $val ?>"><?php echo getStatus($val) ?></div></td>
-                    <td><?php echo getSize($val) ?></td>
-                    <td><div class="percent<?php echo $val ?>"><?php printf("%.2f%%", getPercentDone($val)) ?></div></td>
-                    <td><div class="down<?php echo $val ?>"></div></td>
-                    <td><div class="up<?php echo $val ?>"></div></td>
-                    <td style="width: 150px;"><div class="eta<?php echo $val ?>">∞</div></td>
-                    <td><div class="ratio<?php echo $val ?>"><?php printf("%.2f", getRatio($val)) ?></div></td>
+                    <td><a href="stats.php?hash=<?php echo $val['hash'] ?>"><?php echo $val['name'] ?></a></td>
+                    <td><div class="status<?php echo $val['hash'] ?>"><?php echo $val['status'] ?></div></td>
+                    <td><?php echo $val['size'] ?></td>
+                    <td><div class="percent<?php echo $val['hash'] ?>"><?php printf("%.2f%%", $val['percent']) ?></div></td>
+                    <td><div class="down<?php echo $val['hash'] ?>"></div></td>
+                    <td><div class="up<?php echo $val['hash'] ?>"></div></td>
+                    <td style="width: 150px;"><div class="eta<?php echo $val['hash'] ?>">∞</div></td>
+                    <td><div class="ratio<?php echo $val['hash'] ?>"><?php printf("%.2f", $val['ratio']) ?></div></td>
                 </tr>
-        <?php } unset($val); ?>
+        <?php } ?>
         </table>
         <div class="fixed-action-btn">
             <a class="btn-floating btn-large modal-trigger red" href="#addmodal">

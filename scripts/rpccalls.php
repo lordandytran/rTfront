@@ -3,6 +3,114 @@
         return encodeRequest(array('method'=>$method, 'args'=>$args));
     }
 
+    function ratesStaticMultiCall() {
+        return call('d.multicall', array("main",
+            "d.hash=",
+            "d.name=",
+            "d.is_active=",
+            "d.complete=",
+            "d.connection_current=",
+            "d.hashing=",
+            "d.size_bytes=",
+            "d.completed_bytes=",
+            "d.ratio=",
+            "d.priority_str="
+        ));
+    }
+
+    function ratesMultiCall() {
+        return call('d.multicall', array("started",
+            "d.hash=",
+            "d.is_active=",
+            "d.complete=",
+            "d.connection_current=",
+            "d.hashing=",
+            "d.completed_bytes=",
+            "d.size_bytes=",
+            "d.down.rate=",
+            "d.up.rate=",
+            "d.ratio="
+        ));
+    }
+
+    function filesMultiCall($hash) {
+        return call('f.multicall', array($hash, "",
+            "f.path=",
+            "f.size_bytes=",
+            "f.completed_chunks=",
+            "f.size_chunks=",
+            "f.priority="
+        ));
+    }
+
+    function trackerMultiCall($hash) {
+        return call('t.multicall', array($hash, "",
+            "t.url="
+        ));
+    }
+
+    function peerMultiCall($hash) {
+        return call('p.multicall', array($hash, "",
+            "p.id=",
+            "p.address=",
+            "p.port=",
+            "p.client_version=",
+            "p.completed_percent=",
+            "p.down_rate=",
+            "p.up_rate="
+        ));
+    }
+
+    function statsStaticMultiCall($hash) {
+        $arr = array();
+        $torrents = ratesStaticMultiCall();
+        for($i = 0; $i < sizeof($torrents); $i++) {
+            if($torrents[$i] == $hash) {
+                $arr = array(
+                    "hash" => $torrents[$i],
+                    "name" => $torrents[$i + 1],
+                    "status" => getStatus($torrents[$i + 2], $torrents[$i + 3], $torrents[$i + 4], $torrents[$i + 5]),
+                    "size" => sizeToString($torrents[$i + 6]),
+                    "percent" =>  ($torrents[$i + 7] / $torrents[$i + 6]) * 100,
+                    "ratio" => $torrents[$i + 8] / 1000,
+                    "priority" => $torrents[$i + 9]
+                );
+                break;
+            }
+        }
+        return $arr;
+    }
+
+    function getFilesStatic($hash) {
+        $arr = array();
+        $files = filesMultiCall($hash);
+        for($i = 0; $i < sizeof($files) / 5; $i++) {
+            array_push($arr, array(
+                $files[0 + 5 * $i],
+                sizeToString($files[1 + 5 * $i]),
+                ($files[2 + 5 * $i] / $files[3 + 5 * $i]) * 100,
+                priorityToString($files[4 + 5 * $i])
+            ));
+        }
+        return $arr;
+    }
+
+    function getRatesStatic() {
+        $torrents = ratesStaticMultiCall();
+        $arr = array();
+        for($i = 0; $i < sizeof($torrents) / 10; $i++) {
+            array_push($arr, array(
+                "hash" => $torrents[0 + 10 * $i],
+                "name" => $torrents[1 + 10 * $i],
+                "status" => getStatus($torrents[2 + 10 * $i], $torrents[3 + 10 * $i], $torrents[4 + 10 * $i], $torrents[5 + 10 * $i]),
+                "size" => sizeToString($torrents[6 + 10 * $i]),
+                "percent" =>  ($torrents[7 + 10 * $i] / $torrents[6 + 10 * $i]) * 100,
+                "ratio" => $torrents[8 + 10 * $i] / 1000
+            ));
+        }
+        return $arr;
+    }
+
     function sizeToString($size) {
         $dec = "";
         if($size >= 1099511627776) {
@@ -33,41 +141,6 @@
     //returns download list as array
     function getDownloadList() {
         return call('download_list', "");
-    }
-
-    //returns name of torrent
-    function getName($hash) {
-        return call('d.get_name', $hash)[0];
-    }
-
-    //returns the priority of the torrent
-    function getPriority($hash) {
-        return call('d.priority_str', $hash)[0];
-    }
-
-    //returns size of the torrent
-    function getSize($hash) {
-        $size = call('d.size_bytes', $hash)[0];
-        return sizeToString($size);
-
-    }
-
-    //returns the current upload rate of torrent
-    function getUpRate($hash) {
-        $rate = call('d.up.rate', $hash)[0];
-        return sizeToString($rate) . "/s";
-    }
-
-    //returns the current download rate of torrent
-    function getDownRate($hash) {
-        $rate = call('d.down.rate', $hash)[0];
-        return sizeToString($rate) . "/s";
-    }
-
-    //returns seed ratio of torrent
-    function getRatio($hash) {
-        $ratio = call('d.ratio', $hash)[0];
-        return $ratio / 1000;
     }
 
     //stops given torrent
@@ -106,10 +179,7 @@
         return call('d.directory_base', $hash)[0];
     }
 
-    function getETA($hash) {
-        $done = call('d.completed_bytes', $hash)[0];
-        $total = call('d.size_bytes', $hash)[0];
-        $rate = call('d.down.rate', $hash)[0];
+    function getETA($done, $total, $rate) {
         if($rate == 0 || $done >= $total) {
             return "∞";
         }
@@ -125,7 +195,7 @@
         $months = intval($sec / (2592000));
         if($months > 0) {
             $sec = intval($sec % (2592000));
-            $ret .= "{$months}m ";
+            $ret .= "{$months}mo ";
         }
         $weeks = intval($sec / (604800));
         if($weeks > 0) {
@@ -155,38 +225,26 @@
         return call('d.is_active', $hash)[0];
     }
 
-    function isComplete($hash) {
-        return call('d.complete', $hash)[0];
+    function isHashing($hash) {
+        return call('d.hashing', $hash)[0];
     }
 
     function closeTorrent($hash) {
         return call('d.close', $hash)[0];
     }
 
-    function getCurrentConnection($hash) {
-        return call('d.connection_current', $hash)[0];
-    }
-
-    function isHashing($hash) {
-        return call('d.hashing', $hash)[0];
-    }
-
-    function getStatus($hash) {
-        $active = isActive($hash);
-        $complete = isComplete($hash);
-        $concurr = getCurrentConnection($hash);
-        $hashing = isHashing($hash);
+    function getStatus($active, $complete, $current, $hashing) {
         if($active == 0) {
             return "Stopped";
         }
-        if($complete == 1) { //This condition may never be reached
+        if($complete == 1) {
             return "Complete";
         }
         if($active == 1 && $complete == 1) {
             return "Seeding";
         }
 
-        if($active == 1 && $concurr == "leech") {
+        if($active == 1 && $current == "leech") {
             return "Leeching";
         }
         if($hashing > 0) {
@@ -252,33 +310,6 @@
         return call('d.size_files', $hash)[0];
     }
 
-    function getFilePath($val) {
-        return call('f.get_path', $val)[0];
-    }
-
-    function getFileSize($val) {
-        $size = call('f.size_bytes', $val)[0];
-        return sizeToString($size);
-    }
-
-    function getFileChunks($val) {
-        return call('f.size_chunks', $val)[0];
-    }
-
-    function getCompletedFileChunks($val) {
-        return call('f.completed_chunks', $val)[0];
-    }
-
-    function getFilePercentDone($val) {
-        $total = getFileChunks($val);
-        $done = getCompletedFileChunks($val);
-        return ($done / $total) * 100;
-    }
-
-    function getFilePriority($val) {
-        return priorityToString(call('f.priority', $val)[0]);
-    }
-
     function priorityToString($priority) {
         if($priority == 1) {
             return "normal";
@@ -313,16 +344,8 @@
         return call('p.completed_percent', $hash)[0];
     }
 
-    function getNumTrackers($hash) {
-        return call('d.tracker_size', $hash)[0];
-    }
-
     function addTracker($hash, $num, $url) {
         call('d.tracker.insert', array($hash, $num, $url));
-    }
-
-    function getTracker($val) {
-        return call('t.get_url', $val)[0];
     }
 
     function activeList() {

@@ -3,6 +3,8 @@
     $PORT = 80;
     $RPC = '/RPC2';
 
+    $error = "";
+
     function encodeRequest($req) {
         $method = null;
         $args = null;
