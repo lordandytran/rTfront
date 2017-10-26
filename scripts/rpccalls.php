@@ -143,6 +143,11 @@
         return call('download_list', "");
     }
 
+    //returns name of torrent
+    function getName($hash) {
+        return call('d.get_name', $hash)[0];
+    }
+
     //stops given torrent
     function stopTorrent($hash) {
         call('d.stop', $hash);
@@ -346,6 +351,10 @@
 
     function addTracker($hash, $num, $url) {
         call('d.tracker.insert', array($hash, $num, $url));
+    }
+
+    function getNumTrackers($hash) {
+        return call('d.tracker_size', $hash)[0];
     }
 
     function activeList() {

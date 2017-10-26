@@ -45,6 +45,7 @@
             <ul class="tabs tabs-transparent">
                 <li class="tab"><a class="active" href="#main">Main</a></li>
                 <li class="tab"><a href="#files">Files</a></li>
+                <li class="tab"><a href="#peers">Peers</a></li>
                 <li class="tab"><a href="#trackers">Trackers</a></li>
             </ul>
         </div>
@@ -152,6 +153,7 @@
             <?php }?>
         </div>
     </div>
+    <?php include 'peers.php'?>
     <div id="trackers">
         <ul class="collection with-header">
             <li class="collection-header"><h5>Trackers</h5></li>

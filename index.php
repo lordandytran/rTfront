@@ -61,7 +61,7 @@
     }
 
     $download_list = array_reverse(getRatesStatic());
-
+    $downloads = array_filter(getDownloadList());
 ?>
 <html>
     <head>
@@ -171,6 +171,7 @@
                 </tr>
             </thead>
         <?php
+        if(!empty($downloads)) {
             foreach($download_list as $val) { ?>
                 <tr>
                     <td>
@@ -186,7 +187,7 @@
                     <td style="width: 150px;"><div class="eta<?php echo $val['hash'] ?>">∞</div></td>
                     <td><div class="ratio<?php echo $val['hash'] ?>"><?php printf("%.2f", $val['ratio']) ?></div></td>
                 </tr>
-        <?php } ?>
+        <?php }} ?>
         </table>
         <div class="fixed-action-btn">
             <a class="btn-floating btn-large modal-trigger red" href="#addmodal">
